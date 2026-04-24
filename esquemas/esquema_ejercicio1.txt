@@ -1,0 +1,92 @@
+================================================================================
+                 ESQUEMA ELÉCTRICO - EJERCICIO 1
+         Circuitos eléctricos de las viviendas (Electrificación Elevada)
+================================================================================
+
+DATOS DEL EJERCICIO:
+- 20 puntos de luz
+- 25 tomas de corriente
+- 1 lavadora
+- 1 cocina eléctrica
+- 1 aparato de aire acondicionado
+
+CIRCUITOS SEGÚN ITC-BT-25:
+────────────────────────────────────────────────────────────────────────────────────────────
+Circuito    Utilización                 P_max(W)   I(A)   S(mm²)  Tubo    PIA
+────────────────────────────────────────────────────────────────────────────────────────────
+C1         Iluminación (20 puntos)    2.000     10    1,5    16mm   10A
+C2         Tomas uso general (20)     3.450     15    2,5    20mm   16A
+C3         Cocina eléctrica           5.400     25    6      25mm   25A
+C4         Lavadora                 2.500     20    4      20mm   20A
+C5         Baño y aux. cocina        2.500     20    4      20mm   20A
+C7         Tomas uso general (5)      3.450     15    2,5    20mm   16A
+C9         Aire acondicionado         2.500     20    4      20mm   20A
+────────────────────────────────────────────────────────────────────────────────────────────
+
+SECCIÓN DE CABLES SEGÚN ITC-BT-19 (para instalación empotrada, método B1):
+────────────────────────────────────────────────────────────────────────────────────────────
+- Sección 1,5 mm² → IZ = 14,5A (para 2 conductores en tubo)
+- Sección 2,5 mm² → IZ = 18,5A
+- Sección 4 mm²   → IZ = 24A
+- Sección 6 mm²   → IZ = 31A
+
+CALIBRE DE PROTECCIÓN (PIA) - ITC-BT-25:
+────────────────────────────────────────────────────────────────────────────────────────────
+- C1 (Iluminación):        PIA 10A
+- C2 (Tomas generales):   PIA 16A
+- C3 (Cocina):           PIA 25A
+- C4 (Lavadora):         PIA 20A
+- C5 (Baño/Cocina):      PIA 20A
+- C7 (Tomas adicionales): PIA 16A
+- C9 (Aire A/C):        PIA 20A
+
+ESQUEMA UNIFILAR SIMPLIFICADO
+────────────────────────────────────────────────────────────────────────────────────────────
+
+[ CGP ]─────[ Contador ]─────[ IGA ]────────────────────────────[ Cuadro de protección ]
+  40A                     40A         │                              │
+                              ┌────────┴────────┐             │
+                             │                 │             │
+                           [PIA]           [PIA]         [PIA]
+                            10A             16A          25A
+                            │                │            │
+                           ┌─┴─┐           ┌─┴─┐        ┌─┴─┐
+                           │C1 │           │C2 │        │C3 │
+                           │C7 │           │C5 │        │C9 │
+                           │   │           │   │        │   │
+                           └───┘           └───┘        └───┘
+
+LEYENDA:
+────────────────────────────────────────────────────────────────────────────────────────────
+CGP     = Caja General de Protección (ICP incluido)
+IGA     = Interruptor General Automático (40A para electrificación elevada)
+PIA     = Interruptor Automático de Protección Lineal
+C1      = Circuito 1 - Iluminación (1,5 mm²)
+C2      = Circuito 2 - Tomas uso general (2,5 mm²)
+C3      = Circuito 3 - Cocina (6 mm²)
+C4      = Circuito 4 - Lavadora (4 mm²)
+C5      = Circuito 5 - Baño y auxiliares (4 mm²)
+C7      = Circuito 7 - Tomas adicionales (2,5 mm²)
+C9      = Circuito 9 - Aire acondicionado (4 mm²)
+
+DERIVACIÓN INDIVIDUAL (ITC-BT-15):
+────────────────────────────────────────────────────────────────────────────────────────────
+- Sección mínima: 6 mm² (cobre)
+- IGA recomendado: 40A
+- Interruptor de control de potencia (ICP): 40A
+
+CAÍDA DE TENSIÓN (ITC-BT-25):
+────────────────────────────────────────────────────────────────────────────────────────────
+- Máximo en instalación interior: 3% (para iluminación)
+- Máximo en derivación individual: 1%
+- Total máximo: 5% (desde CGP hasta receptor más lejano)
+
+NOTAS:
+────────────────────────────────────────────────────────────────────────────────────────────
+- Todos los cables serán de cobre tipo H07V-K o H07V-R
+- Aislamiento: PVC para instalaciones empotradas
+- Conductor de protección (tierra): misma sección que la fase
+- Los circuitos C2 y C7 distribuyen las 25 tomas de corriente (20+5)
+- Instalación bajo tubo corrugado empotrado en obra
+
+================================================================================

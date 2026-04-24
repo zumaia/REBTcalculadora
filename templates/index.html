@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora REBT</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+               background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
+               min-height: 100vh; padding: 20px; color: #e2e8f0; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { color: #f8fafc; text-align: center; margin-bottom: 5px; }
+        .subtitle { color: #94a3b8; text-align: center; margin-bottom: 20px; font-size: 14px; }
+        
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab { padding: 12px 20px; background: #334155; color: #e2e8f0; border: none;
+              cursor: pointer; border-radius: 8px; transition: all 0.3s; flex: 1; 
+              min-width: 140px; text-align: center; font-size: 14px; }
+        .tab:hover { background: #475569; }
+        .tab.active { background: #22d3ee; color: #0f172a; font-weight: bold; }
+        
+        .card { background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
+        .card h2 { color: #22d3ee; margin-bottom: 16px; font-size: 18px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .form-group { }
+        .form-group label { display: block; color: #94a3b8; margin-bottom: 6px; font-size: 13px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 6px;
+              border: 1px solid #334155; background: #0f172a; color: #e2e8f0; font-size: 14px; }
+        .form-group input:focus { outline: none; border-color: #22d3ee; }
+        
+        .checkbox-group { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
+        .checkbox-item { display: flex; align-items: center; gap: 6px; color: #e2e8f0; }
+        .checkbox-item input { width: auto; }
+        
+        .btn { width: 100%; padding: 12px; background: #22d3ee; color: #0f172a; border: none;
+               border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;
+               transition: all 0.3s; margin-top: 16px; }
+        .btn:hover { background: #06b6d4; transform: translateY(-1px); }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #334155; }
+        th { color: #22d3ee; font-weight: 600; }
+        td { color: #cbd5e1; }
+        
+        .result-box { background: #0f172a; border-radius: 8px; padding: 16px; margin-top: 16px; }
+        .result-box h3 { color: #22d3ee; margin-bottom: 12px; font-size: 14px; }
+        
+        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; }
+        .result-item:last-child { border-bottom: none; }
+        .result-label { color: #94a3b8; }
+        .result-value { color: #f8fafc; font-weight: 600; }
+        
+        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .badge-basica { background: #22c55e; color: #0f172a; }
+        .badge-elevada { background: #f59e0b; color: #0f172a; }
+        
+        .error { background: #dc2626; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .info-box { background: #1e3a5f; border: 1px solid #22d3ee; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
+        .info-box h3 { color: #22d3ee; margin-bottom: 8px; font-size: 14px; }
+        .info-box p { color: #94a3b8; font-size: 13px; line-height: 1.5; }
+        
+        .scheme { background: #0f172a; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 12px; 
+                  overflow-x: auto; white-space: pre; color: #22d3ee; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora REBT</h1>
+        <p class="subtitle">UF0884 • UF0885 • UF0887 • UF0888</p>
+        
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+        
+        <div class="tabs">
+            <button class="tab {% if opcion == 'vivienda' %}active{% endif %}" onclick="showTab('vivienda')">Vivienda</button>
+            <button class="tab {% if opcion == 'edificio' %}active{% endif %}" onclick="showTab('edificio')">Edificio</button>
+            <button class="tab {% if opcion == 'circuito' %}active{% endif %}" onclick="showTab('circuito')">Circuito</button>
+            <button class="tab {% if opcion == 'di' %}active{% endif %}" onclick="showTab('di')">DI</button>
+        </div>
+        
+        <!-- VIVIENDA -->
+        <div id="vivienda" class="tab-content {% if opcion == 'vivienda' %}active{% endif %}">
+            <div class="card">
+                <h2>UF0887 - Circuitos de Vivienda (ITC-BT-25)</h2>
+                
+                <div class="info-box">
+                    <h3>Electrificación básica/elevada</h3>
+                    <p>Cálculo automático de circuitos C1-C9 según número de puntos de luz, tomas y electrodomésticos.</p>
+                </div>
+                
+                <form method="POST" action="/calcular-vivienda">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Puntos de luz</label>
+                            <input type="number" name="puntos_luz" value="20" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Tomas de corriente</label>
+                            <input type="number" name="tomas" value="25" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitud média (m)</label>
+                            <input type="number" name="longitud" value="25" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Equipamiento (marca los que tengas)</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item"><input type="checkbox" name="lavadora"> Lavadora</label>
+                            <label class="checkbox-item"><input type="checkbox" name="cocina"> Cocina/Horno</label>
+                            <label class="checkbox-item"><input type="checkbox" name="secadora"> Secadora</label>
+                            <label class="checkbox-item"><input type="checkbox" name="aire_ac"> A. Acondicionado</label>
+                            <label class="checkbox-item"><input type="checkbox" name="calefaccion"> Calefacción</label>
+                            <label class="checkbox-item"><input type="checkbox" name="domotica"> Domótica</label>
+                            <label class="checkbox-item"><input type="checkbox" name="recarga_ve"> Recarga VE</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Calcular</button>
+                </form>
+                
+                {% if resultado_vivienda %}
+                <div class="result-box">
+                    <div class="result-item">
+                        <span class="result-label">Electrificación</span>
+                        <span class="result-value">
+                            <span class="badge {% if resultado_vivienda.electrificacion == 'basica' %}badge-basica{% else %}badge-elevada{% endif %}">
+                                {{ resultado_vivienda.electrificacion.upper() }}
+                            </span>
+                        </span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia total</span>
+                        <span class="result-value">{{ resultado_vivienda.potencia_total }} W</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">IGA</span>
+                        <span class="result-value">{{ resultado_vivienda.iga }} A</span>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead><tr><th>Circ</th><th>Descripción</th><th>P(W)</th><th>I(A)</th><th>Sección</th><th>PIA</th><th>Tubo</th></tr></thead>
+                    <tbody>
+                    {% for c in resultado_vivienda.circuitos %}
+                    <tr>
+                        <td>{{ c.codigo }}</td>
+                        <td>{{ c.nombre }}</td>
+                        <td>{{ c.potencia }}</td>
+                        <td>{{ c.intensidad }}</td>
+                        <td>{{ c.seccion }} mm²</td>
+                        <td>{{ c.pia }}A</td>
+                        <td>{{ c.tubo }}mm</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                
+                <div class="result-box">
+                    <h3>Derivación Individual</h3>
+                    <div class="result-item">
+                        <span class="result-label">Sección</span>
+                        <span class="result-value">{{ resultado_vivienda.derivacion_individual.seccion }} mm²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tubo</span>
+                        <span class="result-value">{{ resultado_vivienda.derivacion_individual.tubo }} mm</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia</span>
+                        <span class="result-value">{{ resultado_vivienda.derivacion_individual.potencia }} W</span>
+                    </div>
+                </div>
+                
+                {% if esquema %}
+                <div class="scheme">
+                    {{ esquema }}
+                </div>
+                {% endif %}
+            {% endif %}
+            </div>
+        </div>
+        
+        <!-- EDIFICIO -->
+        <div id="edificio" class="tab-content {% if opcion == 'edificio' %}active{% endif %}">
+            <div class="card">
+                <h2>UF0884 - Instalaciones de Enlace</h2>
+                
+                <div class="info-box">
+                    <h3>CGP, LGA, Centralización, DI</h3>
+                    <p>Cálculo de línea general de alimentación y derivaciones individuales de edificio.</p>
+                </div>
+                
+                <form method="POST" action="/calcular-edificio">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Viviendas básicas</label>
+                            <input type="number" name="n_viviendas_basicas" value="4" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Viviendas elevadas</label>
+                            <input type="number" name="n_viviendas_elevadas" value="6" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitud LGA (m)</label>
+                            <input type="number" name="longitud_lga" value="10" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitud DI (m)</label>
+                            <input type="number" name="longitud_di" value="15" min="1">
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Potencia servicios (W)</label>
+                            <input type="number" name="potencia_servicios" value="0" min="0" placeholder="0 = auto">
+                        </div>
+                        <div class="form-group">
+                            <label>Superficie local (m²)</label>
+                            <input type="number" name="superficie_local" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Superficie garaje (m²)</label>
+                            <input type="number" name="superficie_garaje" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Ventilación garaje</label>
+                            <select name="ventilacion_garaje">
+                                <option value="natural">Natural</option>
+                                <option value="forzada">Forzada</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" name="es_trifasica"> Alimentación trifásica</label>
+                    </div>
+                    <button type="submit" class="btn">Calcular</button>
+                </form>
+                
+                {% if resultado_edificio %}
+                <div class="result-box">
+                    <h3>Previsión de carga</h3>
+                    <div class="result-item">
+                        <span class="result-label">Nº viviendas</span>
+                        <span class="result-value">{{ resultado_edificio.num_viviendas }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Coef. simultaneidad</span>
+                        <span class="result-value">{{ resultado_edificio.coef_simultaneidad }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia viviendas</span>
+                        <span class="result-value">{{ resultado_edificio.potencia_viviendas|int }} W</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia servicios</span>
+                        <span class="result-value">{{ resultado_edificio.potencia_servicios|int }} W</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia local</span>
+                        <span class="result-value">{{ resultado_edificio.potencia_local|int }} W</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia total</span>
+                        <span class="result-value">{{ resultado_edificio.potencia_total|int }} W</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h3>Línea General de Alimentación</h3>
+                    <div class="result-item">
+                        <span class="result-label">Sección</span>
+                        <span class="result-value">{{ resultado_edificio.lga.seccion }} mm²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tubo</span>
+                        <span class="result-value">{{ resultado_edificio.lga.tubo }} mm</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Intensidad</span>
+                        <span class="result-value">{{ resultado_edificio.lga.intensidad }} A</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Fusible CGP</span>
+                        <span class="result-value">{{ resultado_edificio.lga.fusible }} A</span>
+                    </div>
+                </div>
+                
+                <table>
+                    <thead><tr><th>Vivienda</th><th>Tipo</th><th>P(W)</th><th>I(A)</th><th>Sección</th><th>Tubo</th></tr></thead>
+                    <tbody>
+                    {% for di in resultado_edificio.derivaciones_individuales[:8] %}
+                    <tr>
+                        <td>{{ di.vivienda }}</td>
+                        <td>{{ di.tipo }}</td>
+                        <td>{{ di.potencia }}</td>
+                        <td>{{ di.intensidad }}</td>
+                        <td>{{ di.seccion }} mm²</td>
+                        <td>{{ di.tubo }}mm</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- CIRCUITO -->
+        <div id="circuito" class="tab-content {% if opcion == 'circuito' %}active{% endif %}">
+            <div class="card">
+                <h2>Cálculo de Circuito</h2>
+                
+                <form method="POST" action="/calcular-circuito">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Potencia (W)</label>
+                            <input type="number" name="potencia" value="2000" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitud (m)</label>
+                            <input type="number" name="longitud" value="30" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Tensión (V)</label>
+                            <input type="number" name="tension" value="230">
+                        </div>
+                        <div class="form-group">
+                            <label>Factor de potencia</label>
+                            <input type="number" name="fp" value="0.8" step="0.01" min="0.5" max="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo instalación</label>
+                            <select name="tipo_instalacion">
+                                <option value="vivienda">Vivienda</option>
+                                <option value="concurrencia">P.Concurrencia</option>
+                                <option value="industrial">Industrial</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Calcular</button>
+                </form>
+                
+                {% if resultado_circuito %}
+                <div class="result-box">
+                    <div class="result-item">
+                        <span class="result-label">Intensidad</span>
+                        <span class="result-value">{{ resultado_circuito.intensidad }} A</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Sección CDT</span>
+                        <span class="result-value">{{ resultado_circuito.seccion_cdt }} mm²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Sección final</span>
+                        <span class="result-value">{{ resultado_circuito.seccion }} mm²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">PIA</span>
+                        <span class="result-value">{{ resultado_circuito.pia }} A</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tubo</span>
+                        <span class="result-value">{{ resultado_circuito.tubo }} mm</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">C.D.T. máx</span>
+                        <span class="result-value">{{ resultado_circuito.cdt_max }}%</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- DI -->
+        <div id="di" class="tab-content {% if opcion == 'di' %}active{% endif %}">
+            <div class="card">
+                <h2>Derivación Individual</h2>
+                
+                <form method="POST" action="/calcular-di">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Potencia (W)</label>
+                            <input type="number" name="potencia" value="5000" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Longitud (m)</label>
+                            <input type="number" name="longitud" value="15" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Tensión (V)</label>
+                            <input type="number" name="tension" value="230">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" name="es_trifasica"> Trifásica</label>
+                    </div>
+                    <button type="submit" class="btn">Calcular</button>
+                </form>
+                
+                {% if resultado_di %}
+                <div class="result-box">
+                    <div class="result-item">
+                        <span class="result-label">Intensidad</span>
+                        <span class="result-value">{{ resultado_di.intensidad }} A</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Sección CDT</span>
+                        <span class="result-value">{{ resultado_di.seccion_cdt }} mm²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Sección</span>
+                        <span class="result-value">{{ resultado_di.seccion }} mm²</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">IGA</span>
+                        <span class="result-value">{{ resultado_di.iga }} A</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Tubo</span>
+                        <span class="result-value">{{ resultado_di.tubo }} mm</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Conductores</span>
+                        <span class="result-value">{{ resultado_di.n_conductores }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            localStorage.setItem('rebt_tab', tabId);
+        }
+        
+        // Restore tab
+        const savedTab = localStorage.getItem('rebt_tab');
+        if (savedTab) showTab(savedTab);
+    </script>
+</body>
+</html>
