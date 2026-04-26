@@ -29,7 +29,8 @@ from engine_rebt import (
     normalizar_seccion,
     ResultadoCircuito,
     ResultadoDI,
-    ResultadoLGA
+    ResultadoLGA,
+    CAIDAS_TENSION
 )
 from schemes import generar_esquema_vivienda, generar_esquema_edificio
 
@@ -181,8 +182,10 @@ def calcular_circuito():
         tipo_instalacion = request.form.get('tipo_instalacion', 'vivienda')
         
         intensidad = calcular_intensidad(potencia, tension, fp)
-        cdt = 3 if tipo_instalacion == 'vivienda' else 5
-        seccion_cdt = calcular_seccion_cdt(potencia, longitud, cdt, tension, fp)
+        
+        # CDT según tipo REBT ITC-BT-19
+        cdt_max = CAIDAS_TENSION.get(tipo_instalacion, CAIDAS_TENSION["vivienda"])["interior"]
+        seccion_cdt = calcular_seccion_cdt(potencia, longitud, cdt_max, tension, fp)
         seccion, iz = calcular_seccion_por_intensidad(intensidad, "B1", "2xPVC")
         seccion_final = normalizar_seccion(max(seccion, seccion_cdt, 1.5))
         pia = calcular_pia(intensidad)
