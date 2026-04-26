@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REBT Calculator - Ejercicios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-primary: #0f0f23; --bg-secondary: #1a1a2e; --bg-card: #16213e; --accent: #00d4ff; --text-primary: #ffffff; --text-secondary: #94a3b8; --text-muted: #64748b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 8px; color: var(--accent); }
+        h1 a { color: inherit; text-decoration: none; }
+        h2 { color: var(--accent); margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        label { font-size: 13px; color: var(--text-secondary); }
+        textarea { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 12px; color: var(--text-primary); font-size: 14px; min-height: 100px; width: 100%; font-family: inherit; }
+        textarea:focus { outline: none; border-color: var(--accent); }
+        select { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 14px; }
+        .btn { background: var(--accent); border: none; border-radius: 8px; padding: 12px 24px; color: var(--bg-primary); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; margin-top: 12px; }
+        .result-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-top: 16px; }
+        .result-item { padding: 8px 0; border-bottom: 1px solid var(--bg-card); }
+        .result-label { color: var(--text-secondary); font-size: 13px; }
+        .result-value { margin-top: 4px; white-space: pre-wrap; }
+        .nav { display: flex; justify-content: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+        .nav a { background: var(--bg-secondary); padding: 10px 16px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">REBT Calculator</a></h1>
+        <h2>📝 Resolución de Ejercicios (IA)</h2>
+        
+        <form method="POST" action="/resolver">
+            <div class="form-group">
+                <label>Enunciado del problema</label>
+                <textarea name="problema" rows="4" placeholder="Ej: Calcular la sección de un cable de cobre para alimentar un receptor de 2300W a 230V, fp=0.85, longitud 25m, caída máxima 3%">{{ problema or '' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Modo</label>
+                <select name="modo">
+                    <option value="auto">Automático (IA)</option>
+                    <option value="pasos">Solo pasos (sin resolver)</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn">🔍 Resolver</button>
+        </form>
+        
+        {% if resultado %}
+        <div class="result-box">
+            {% for paso in resultado %}
+            <div class="result-item">
+                <div class="result-label">{{ paso.titulo }}</div>
+                <div class="result-value">{{ paso.contenido }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="nav">
+            <a href="/vivienda">🏠 Vivienda</a>
+            <a href="/edificio">🏢 Edificio</a>
+            <a href="/circuito">⚡ Circuito</a>
+            <a href="/di">🔌 DI</a>
+            <a href="/proyecto">📋 Proyecto</a>
+            <a href="/buscar">🔍 Buscar</a>
+        </div>
+    </div>
+</body>
+</html>

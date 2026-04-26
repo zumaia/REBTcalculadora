@@ -116,8 +116,23 @@ def circuito():
 
 
 @app.route('/di')
-def di():
+def di_page():
     return render_template('index_di.html')
+
+
+@app.route('/ejercicios')
+def ejercicios():
+    return render_template('index_ejercicios.html')
+
+
+@app.route('/proyecto')
+def proyecto():
+    return render_template('index_proyecto.html')
+
+
+@app.route('/buscar')
+def buscar():
+    return render_template('index_buscar.html')
 
 
 @app.route('/calcular-vivienda', methods=['POST'])

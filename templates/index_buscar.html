@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REBT Calculator - Buscar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-primary: #0f0f23; --bg-secondary: #1a1a2e; --bg-card: #16213e; --accent: #00d4ff; --text-primary: #ffffff; --text-secondary: #94a3b8; --text-muted: #64748b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 8px; color: var(--accent); }
+        h1 a { color: inherit; text-decoration: none; }
+        h2 { color: var(--accent); margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        input[type="text"] { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 12px; color: var(--text-primary); font-size: 14px; width: 100%; }
+        input:focus { outline: none; border-color: var(--accent); }
+        .btn { background: var(--accent); border: none; border-radius: 8px; padding: 12px 24px; color: var(--bg-primary); font-size: 14px; font-weight: 600; cursor: pointer; }
+        .results { margin-top: 20px; }
+        .result-item { background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-bottom: 12px; }
+        .result-item h4 { color: var(--accent); margin-bottom: 8px; font-size: 14px; }
+        .result-item p { color: var(--text-secondary); font-size: 13px; line-height: 1.5; }
+        .meta { color: var(--text-muted); font-size: 11px; margin-top: 8px; }
+        .nav { display: flex; justify-content: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+        .nav a { background: var(--bg-secondary); padding: 10px 16px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">REBT Calculator</a></h1>
+        <h2>🔍 Buscar en normativa REBT</h2>
+        
+        <form method="POST" action="/buscar">
+            <div class="form-group">
+                <input type="text" name="q" value="{{ query or '' }}" placeholder="Ej: ITC-BT-25 circuitos vivienda">
+            </div>
+            <button type="submit" class="btn">🔍 Buscar</button>
+        </form>
+        
+        {% if resultados %}
+        <p style="color: var(--text-muted); margin: 12px 0;">{{ resultados|length }} resultados para "{{ query }}"</p>
+        <div class="results">
+            {% for r in resultados %}
+            <div class="result-item">
+                <h4>{{ r.fuente }} ({{ r.tipo }})</h4>
+                <p>{{ r.texto[:300] }}...</p>
+                <div class="meta">Relevancia: {{ (r.similitud * 100)|int }}%</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="nav">
+            <a href="/vivienda">🏠 Vivienda</a>
+            <a href="/edificio">🏢 Edificio</a>
+            <a href="/circuito">⚡ Circuito</a>
+            <a href="/di">🔌 DI</a>
+            <a href="/ejercicios">📝 Ejercicios</a>
+            <a href="/proyecto">📋 Proyecto</a>
+        </div>
+    </div>
+</body>
+</html>
