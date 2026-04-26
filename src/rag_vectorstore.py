@@ -60,7 +60,7 @@ class VectorStore:
             print("  ⚠️ Sin texto extraído")
             return 0
         
-        chunks = chunkify(texto, chunk_size=800, overlap=100)
+        chunks = chunkify(texto, chunk_size=500, overlap=50)
         print(f"  📝 {len(chunks)} chunks")
         
         if not chunks:

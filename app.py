@@ -33,48 +33,58 @@ from engine_rebt import (
 )
 from schemes import generar_esquema_vivienda, generar_esquema_edificio
 
-# Importar RAG si está disponible
-try:
-    from ollama_client import REBT_Search
-    RAG_AVAILABLE = True
-except ImportError as e:
-    print(f"RAG no disponible: {e}")
-    RAG_AVAILABLE = False
-    REBT_Search = None
+# RAG solo en local (no en Vercel por tamaño)
+RAG_AVAILABLE = False
+REBT_Search = None
 
-# Importar resolutor de ejercicios
-try:
-    from resolutor import resolver_ejercicio, formatear_resultado
-    RESOLUTOR_AVAILABLE = True
-except ImportError:
-    RESOLUTOR_AVAILABLE = False
-    resolver_ejercicio = None
-    formatear_resultado = None
+# Resolutor solo en local
+RESOLUTOR_AVAILABLE = False
+resolver_ejercicio = None
+formatear_resultado = None
+
+if os.environ.get('VERCEL') != '1':
+    try:
+        from ollama_client import REBT_Search
+        RAG_AVAILABLE = True
+    except:
+        pass
+    
+    try:
+        from resolutor import resolver_ejercicio, formatear_resultado
+        RESOLUTOR_AVAILABLE = True
+    except:
+        pass
 
 # Importar generador MEM
+MEM_AVAILABLE = False
+
 try:
     from mem_generator import generar_mem_txt, guardar_mem
     MEM_AVAILABLE = True
-except ImportError:
-    MEM_AVAILABLE = False
+except Exception as e:
+    print(f"MEM no disponible: {e}")
     generar_mem_txt = None
     guardar_mem = None
 
 # Importar generador de proyectos
+PROYECTO_AVAILABLE = False
+
 try:
     from proyecto_generator import generar_proyecto, guardar_proyecto
     PROYECTO_AVAILABLE = True
-except ImportError:
-    PROYECTO_AVAILABLE = False
+except Exception as e:
+    print(f"Proyecto no disponible: {e}")
     generar_proyecto = None
     guardar_proyecto = None
 
 # Importar generador SVG
+SVG_AVAILABLE = False
+
 try:
     from svg_generator import generar_svg_profesional, svg_a_bytes
     SVG_AVAILABLE = True
-except ImportError:
-    SVG_AVAILABLE = False
+except Exception as e:
+    print(f"SVG no disponible: {e}")
     generar_svg_profesional = None
 
 app = Flask(__name__)

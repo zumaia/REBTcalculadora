@@ -55,8 +55,8 @@ def obtener_documentos() -> List[Tuple[str, str]]:
     return docs
 
 
-def chunkify(texto: str, chunk_size: int = 1000, overlap: int = 100) -> List[str]:
-    """Divide texto en chunks"""
+def chunkify(texto: str, chunk_size: int = 500, overlap: int = 50) -> List[str]:
+    """Divide texto en chunks - tamaño reducido para GitHub"""
     chunks = []
     start = 0
     texto_len = len(texto)
@@ -66,6 +66,8 @@ def chunkify(texto: str, chunk_size: int = 1000, overlap: int = 100) -> List[str
         chunk = texto[start:end]
         chunks.append(chunk)
         start += chunk_size - overlap
+    
+    return chunks
     
     return chunks
 
