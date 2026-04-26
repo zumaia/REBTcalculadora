@@ -1,0 +1,94 @@
+<svg width="900" height="385" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo -->
+  <rect width="900" height="385" fill="#003366"/>
+  
+  <!-- Título -->
+  <text x="50" y="30" fill="#ffffff" font-size="16" font-weight="bold">ESQUEMA UNIFILAR</text>
+  <text x="300" y="30" fill="#87CEEB" font-size="14">EB</text>
+  <text x="420" y="30" fill="#87CEEB" font-size="14">Grado Electrificación: BASICA</text>
+  <line x1="50" y1="40" x2="850" y2="40" stroke="#ffffff" stroke-width="1"/>
+  
+  <!-- CGP -->
+  <rect x="60" y="60" width="100" height="50" fill="#004080" stroke="#ffffff" stroke-width="2" rx="2"/>
+  <text x="110" y="80" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">CGP</text>
+  <text x="110" y="100" text-anchor="middle" fill="#87CEEB" font-size="11">ITC-BT-12</text>
+  
+  <!-- Flecha CGP -->
+  <polygon points="160,75 175,85 160,95" fill="#ffffff"/>
+  <line x1="160" y1="85" x2="175" y2="85" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- ICP -->
+  <rect x="180" y="60" width="80" height="50" fill="#004080" stroke="#ffffff" stroke-width="2" rx="2"/>
+  <text x="220" y="80" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">ICP</text>
+  <text x="220" y="100" text-anchor="middle" fill="#87CEEB" font-size="11">ITC-BT-13</text>
+  
+  <!-- Flecha ICP -->
+  <polygon points="260,75 275,85 260,95" fill="#ffffff"/>
+  <line x1="260" y1="85" x2="275" y2="85" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- IGA -->
+  <rect x="280" y="60" width="80" height="50" fill="#004080" stroke="#ffffff" stroke-width="2" rx="2"/>
+  <text x="320" y="80" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">IGA</text>
+  <text x="320" y="100" text-anchor="middle" fill="#87CEEB" font-size="11">32A</text>
+  
+  <!-- Flecha IGA -->
+  <polygon points="360,75 375,85 360,95" fill="#ffffff"/>
+  <line x1="360" y1="85" x2="375" y2="85" stroke="#ffffff" stroke-width="2"/>
+  
+  <!-- Diferencial -->
+  <rect x="380" y="60" width="100" height="50" fill="#004080" stroke="#ffffff" stroke-width="2" rx="2"/>
+  <text x="430" y="80" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="bold">ID</text>
+  <text x="430" y="100" text-anchor="middle" fill="#87CEEB" font-size="11">30mA</text>
+  
+  <!-- Cuadro de distribución -->
+  <rect x="500" y="55" width="230" height="126" fill="#004080" stroke="#ffffff" stroke-width="2" rx="2"/>
+  <text x="615" y="75" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="bold">CUADRO</text>
+  <line x1="510" y1="80" x2="720" y2="80" stroke="#ffffff" stroke-width="1"/>
+
+  <rect x="515" y="90" width="45" height="22" fill="#004080" stroke="#ffffff" stroke-width="1" rx="1"/>
+  <text x="537" y="105" text-anchor="middle" fill="#ffffff" font-size="9">C1</text>
+  <text x="563" y="105" text-anchor="end" fill="#87CEEB" font-size="8">10A</text>
+
+  <rect x="515" y="122" width="45" height="22" fill="#004080" stroke="#ffffff" stroke-width="1" rx="1"/>
+  <text x="537" y="137" text-anchor="middle" fill="#ffffff" font-size="9">C2</text>
+  <text x="563" y="137" text-anchor="end" fill="#87CEEB" font-size="8">16A</text>
+
+  <rect x="565" y="154" width="45" height="22" fill="#004080" stroke="#ffffff" stroke-width="1" rx="1"/>
+  <text x="587" y="169" text-anchor="middle" fill="#ffffff" font-size="9">C5</text>
+  <text x="613" y="169" text-anchor="end" fill="#87CEEB" font-size="8">20A</text>
+
+  <!-- Derivación Individual -->
+  <polygon points="110,130 160,145 110,160" fill="#ffffff"/>
+  <text x="110" y="175" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="bold">D.I.</text>
+  <text x="110" y="188" text-anchor="middle" fill="#87CEEB" font-size="9">16mm²</text>
+  <text x="110" y="200" text-anchor="middle" fill="#87CEEB" font-size="8">Ø40</text>
+  <text x="110" y="212" text-anchor="middle" fill="#87CEEB" font-size="8">8940W</text>
+  <line x1="160" y1="145" x2="180" y2="145" stroke="#ffffff" stroke-width="2"/>
+
+  <!-- Leyenda -->
+  <text x="50" y="345" fill="#87CEEB" font-size="10">ITC-BT-12: CGP</text>
+  <text x="150" y="345" fill="#87CEEB" font-size="10">ITC-BT-13: ICP</text>
+  <text x="250" y="345" fill="#87CEEB" font-size="10">ITC-BT-14: IGA</text>
+  <text x="380" y="345" fill="#87CEEB" font-size="10">ITC-BT-17: ID</text>
+  <text x="500" y="345" fill="#87CEEB" font-size="10">ITC-BT-25: Circuitos</text>
+  
+  <!-- Tabla-circuitos -->
+  <text x="600" y="315" fill="#ffffff" font-size="11" font-weight="bold">CIRCUITOS</text>
+  <line x1="600" y1="320" x2="750" y2="320" stroke="#ffffff"/>
+
+  <text x="600" y="330" fill="#ffffff" font-size="9">C1</text>
+  <text x="630" y="330" fill="#87CEEB" font-size="9">Iluminació</text>
+  <text x="700" y="330" fill="#87CEEB" font-size="9">1.5mm²</text>
+  <text x="750" y="330" fill="#87CEEB" font-size="9">10A</text>
+
+  <text x="600" y="342" fill="#ffffff" font-size="9">C2</text>
+  <text x="630" y="342" fill="#87CEEB" font-size="9">Tomas uso </text>
+  <text x="700" y="342" fill="#87CEEB" font-size="9">2.5mm²</text>
+  <text x="750" y="342" fill="#87CEEB" font-size="9">16A</text>
+
+  <text x="600" y="354" fill="#ffffff" font-size="9">C5</text>
+  <text x="630" y="354" fill="#87CEEB" font-size="9">Tomas baño</text>
+  <text x="700" y="354" fill="#87CEEB" font-size="9">4mm²</text>
+  <text x="750" y="354" fill="#87CEEB" font-size="9">20A</text>
+
+</svg>

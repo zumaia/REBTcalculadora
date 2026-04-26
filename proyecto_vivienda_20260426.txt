@@ -1,0 +1,104 @@
+
+================================================================================
+                         MEMORIA DEL PROYECTO
+                    INSTALACIÓN ELÉCTRICA DE BAJA TENSIÓN
+================================================================================
+
+DATOS GENERALES
+================================================================================
+Nombre del proyecto: Oscar
+Tipo de instalación: Vivienda Unifamiliar
+Dirección: Errondo Pasealekua, 902, 20010 Donostia / San Sebastián, Gipuzkoa, España
+Fecha: 26/04/2026
+Superficie: 100 m²
+Potencia instalada: 5000 W
+
+================================================================================
+1. OBJETO DEL PROYECTO
+================================================================================
+El presente proyecto tiene por objeto establecer las características técnicas de la
+instalación eléctrica de baja tensión para Vivienda Unifamiliar,
+cumpliendo con el Reglamento Electrotécnico de Baja Tensión (REBT) y sus ITCs.
+
+================================================================================
+2. POTENCIA PREVISTA
+================================================================================
+Potencia instalada: 5000 W (5.00 kW)
+
+Grado de electrificación: BASICA
+Potencia total: 7950 W
+
+CIRCUITOS (ITC-BT-25):
+  C1 - Iluminación               P= 2000W  S=1.5mm²  PIA=10A
+  C2 - Tomas uso general         P= 3450W  S=2.5mm²  PIA=16A
+  C5 - Tomas baños/aux.cocina    P= 2500W  S=4mm²  PIA=20A
+
+DERIVACIÓN INDIVIDUAL:
+  Sección: 16 mm²
+  Tubo: 40 mm
+  Protección (IGA): 32 A
+  Potencia: 9540 W
+
+================================================================================
+3. INSTALACIÓN DE ENLACE
+================================================================================
+
+- Caja general de protección (CGP): En fachada
+- Línea general de alimentación (LGA): 16mm²
+- Derivación individual: 11mm²
+- Contador: En centralización
+
+================================================================================
+4. INSTALACIÓN INTERIOR
+================================================================================
+4.1 Cuadro Principal:
+
+- 1 Interruptor general automático (IGA)
+- 1 Interruptor diferencial 30mA
+- PIAs para cada circuito (C1-C13)
+
+4.2 Tomas de corriente: 30 uds
+4.3 Puntos de luz: 20 uds
+
+================================================================================
+5. SPECIFICACIONES TÉCNICAS
+================================================================================
+- Tensión nominal: 230V / 400V (trifásico para vivienda)
+- Frecuencia: 50 Hz
+- Grado de protección envolvente: IP44
+- Sistema de instalación: Tubos corrugados
+- Conductor: Cobre rígido (H07V-K)
+- Aislamiento: XLPE o PVC
+- Protección: Diferencial 30mA + Magnetotérmica
+
+================================================================================
+6. CÁLCULOS JUSTIFICATIVOS
+================================================================================
+6.1 Intensidad:
+    I = P / (U × fp)
+    I = 5000 / (230 × 0.8) = 27.17 A
+
+================================================================================
+7. DOCUMENTACIÓN GRÁFICA
+================================================================================
+- Plano de situación
+- Plano de distribución
+- Esquema unifilar
+- Detalles constructivos
+
+================================================================================
+8. PRESUPUESTO APROXIMADO
+================================================================================
+
+- Cuadro eléctrico: 150-250 €
+- Cable y tubos: 283 €
+- Mecanismos: 212 €
+- Mano de obra: 425 €
+- Varios: 141 €
+─────────────────────────────────
+TOTAL: 850 € (aprox)
+
+================================================================================
+Fdo.: ________________________
+Fecha: 26/04/2026
+================================================================================

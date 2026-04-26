@@ -1,0 +1,93 @@
+
+MEMORIA TÉCNICA DE DISEÑO (MEM)
+REGLAMENTO ELECTROTÉCNICO DE BAJA TENSIÓN
+ITC-BT-04
+
+================================================================================
+1. DATOS GENERALES
+================================================================================
+Fecha: 26/04/2026
+Tipo de instalación: VIVIENDA
+Grado de electrificación: ELEVADA
+Potencia total: 11950 W (11.95 kW)
+
+================================================================================
+2. POTENCIA PREVISTA POR CIRCUTO (ITC-BT-25)
+================================================================================
+
+C1 - Iluminación                    P= 3000W  I=13.04A  S=2.5mm²  PIA=10A
+C6 - Iluminación extra              P= 3000W  I=13.04A  S=2.5mm²  PIA=10A
+C2 - Tomas uso general              P= 3450W  I=15.00A  S=2.5mm²  PIA=16A
+C5 - Tomas baños/aux.cocina         P= 2500W  I=12.08A  S=4mm²  PIA=20A
+
+================================================================================
+3. DERIVACIÓN INDIVIDUAL
+================================================================================
+Potencia: 14340 W
+Intensidad: 77.93 A
+Sección: 35 mm²
+Tubo: 50 mm (Ø exterior)
+Protección (IGA): 50 A
+
+================================================================================
+4. CÁLCULOS JUSTIFICATIVOS
+================================================================================
+4.1 Intensidad:
+    I = P / (U × fp)
+    I = 14340 / (230 × 0.8) = 77.93 A
+
+4.2 Sección por intensidad admisible:
+    Según ITC-BT-19, método B1, PVC
+    Sección calculada: 35 mm²
+
+4.3 Sección por caída de tensión:
+    CDT máx: 1% (derivación individual)
+    S = 2 × ρ × P × L / (ΔU% × U × fp)
+    S = 35 mm² (calculada)
+
+================================================================================
+5. ESPECIFICACIONES TÉCNICAS
+================================================================================
+- Tensión nominal: 230V / 400V
+- Frecuencia: 50 Hz
+- Grado de protección: IP44
+- Sistema de instalación: Tubos en serie M20, M25, M32
+- Conductor: Cobre rgido tipo H07V-K
+- Aislamiento: XLPE (para tubos) o PVC (para cables)
+- Protección diferencial: 30mA
+- Protección magnetotérmica:PIA en cada circuito
+
+================================================================================
+6. ESQUEMA UNIFILAR (simplificado)
+================================================================================
+CGP (Caja de General de Protección)
+    │
+    ├─── IGA 50A
+    │         │
+    │    ┌───┴───┐
+    │    │       │
+    │   C1      C2   ... (circuitos)
+    │    │       │
+    └───┴───────┴── → Derivación Individual 35mm²
+
+================================================================================
+7. PRESUPUESTO APROXIMADO (materiales)
+================================================================================
+- Cuadro eléctrico completo: 150-250 €
+- Cable (200m): 80-120 €
+- Tubos y accesorios: 60-100 €
+- Mecanismos y tomas: 100-200 €
+- Mano de obra: 200-400 €
+─────────────────────────────────
+TOTAL APROXIMADO: 500-1000 €
+
+================================================================================
+8. DECLARACIÓN
+================================================================================
+La presente Memoria Técnica de Diseño se elabora conforme a lo establecido
+en la ITC-BT-04 del REBT, indicando que la instalación diseñada
+cumple con los requisitos de seguridad establecidos.
+
+Fdo.: ________________________
+Fecha: 26/04/2026
+

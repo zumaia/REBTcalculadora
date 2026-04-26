@@ -1,0 +1,101 @@
+
+================================================================================
+                         MEMORIA DEL PROYECTO
+                    INSTALACIÓN ELÉCTRICA DE BAJA TENSIÓN
+================================================================================
+
+DATOS GENERALES
+================================================================================
+Nombre del proyecto: Oscar
+Tipo de instalación: Local Comercial
+Dirección: Errondo Pasealekua, 902, 20010 Donostia / San Sebastián, Gipuzkoa, España
+Fecha: 26/04/2026
+Superficie: 100 m²
+Potencia instalada: 15000 W
+
+================================================================================
+1. OBJETO DEL PROYECTO
+================================================================================
+El presente proyecto tiene por objeto establecer las características técnicas de la
+instalación eléctrica de baja tensión para Local Comercial,
+cumpliendo con el Reglamento Electrotécnico de Baja Tensión (REBT) y sus ITCs.
+
+================================================================================
+2. POTENCIA PREVISTA
+================================================================================
+Potencia instalada: 15000 W (15.00 kW)
+
+Intensidad de cálculo: 81.52 A
+Sección del conductor: 35 mm² (Iz=89A)
+Protección magnetotérmica: 100 A
+Tubo protector: 50 mm
+
+Nº de circuitos previstos: 5
+
+================================================================================
+3. INSTALACIÓN DE ENLACE
+================================================================================
+
+- Acometida: trifásica 400V
+- Caja general de protección (CGP): Exterior
+- Línea general de alimentación: 17mm²
+- Contadores: Centralización
+
+================================================================================
+4. INSTALACIÓN INTERIOR
+================================================================================
+4.1 Cuadro Principal:
+
+- 1 Interruptor general automático: 47A
+- 1 Interruptor diferencial 30mA
+- 5 PIAs para circuitos
+
+4.2 Tomas de corriente: 30 uds
+4.3 Puntos de luz: 20 uds
+
+================================================================================
+5. SPECIFICACIONES TÉCNICAS
+================================================================================
+- Tensión nominal: 230V / 400V (trifásico para local)
+- Frecuencia: 50 Hz
+- Grado de protección envolvente: IP44
+- Sistema de instalación: Tubos corrugados
+- Conductor: Cobre rígido (H07V-K)
+- Aislamiento: XLPE o PVC
+- Protección: Diferencial 30mA + Magnetotérmica
+
+================================================================================
+6. CÁLCULOS JUSTIFICATIVOS
+================================================================================
+6.1 Intensidad:
+    I = P / (U × fp)
+    I = 15000 / (230 × 0.8) = 81.52 A
+
+6.2 Sección por intensidad admisible:
+    Sección calculada: 35 mm² (Iz=89A)
+    Selección: Normalizar a 35mm²
+
+================================================================================
+7. DOCUMENTACIÓN GRÁFICA
+================================================================================
+- Plano de situación
+- Plano de distribución
+- Esquema unifilar
+- Detalles constructivos
+
+================================================================================
+8. PRESUPUESTO APROXIMADO
+================================================================================
+
+- Cuadro eléctrico: 150-250 €
+- Cable y tubos: 600 €
+- Mecanismos: 450 €
+- Mano de obra: 900 €
+- Varios: 300 €
+─────────────────────────────────
+TOTAL: 1800 € (aprox)
+
+================================================================================
+Fdo.: ________________________
+Fecha: 26/04/2026
+================================================================================

@@ -6,9 +6,11 @@ Calculadora REBT - Aplicación Flask
  UF0888: Pública Concurrencia
 """
 
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response, stream_with_context
+from datetime import datetime
 import sys
 import os
+import json
 
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
@@ -30,6 +32,50 @@ from engine_rebt import (
     ResultadoLGA
 )
 from schemes import generar_esquema_vivienda, generar_esquema_edificio
+
+# Importar RAG si está disponible
+try:
+    from ollama_client import REBT_Search
+    RAG_AVAILABLE = True
+except ImportError as e:
+    print(f"RAG no disponible: {e}")
+    RAG_AVAILABLE = False
+    REBT_Search = None
+
+# Importar resolutor de ejercicios
+try:
+    from resolutor import resolver_ejercicio, formatear_resultado
+    RESOLUTOR_AVAILABLE = True
+except ImportError:
+    RESOLUTOR_AVAILABLE = False
+    resolver_ejercicio = None
+    formatear_resultado = None
+
+# Importar generador MEM
+try:
+    from mem_generator import generar_mem_txt, guardar_mem
+    MEM_AVAILABLE = True
+except ImportError:
+    MEM_AVAILABLE = False
+    generar_mem_txt = None
+    guardar_mem = None
+
+# Importar generador de proyectos
+try:
+    from proyecto_generator import generar_proyecto, guardar_proyecto
+    PROYECTO_AVAILABLE = True
+except ImportError:
+    PROYECTO_AVAILABLE = False
+    generar_proyecto = None
+    guardar_proyecto = None
+
+# Importar generador SVG
+try:
+    from svg_generator import generar_svg_profesional, svg_a_bytes
+    SVG_AVAILABLE = True
+except ImportError:
+    SVG_AVAILABLE = False
+    generar_svg_profesional = None
 
 app = Flask(__name__)
 
@@ -224,6 +270,184 @@ def api_calcular():
             return jsonify({'error': 'Tipo no válido'}), 400
             
         return jsonify({'ok': True, 'resultado': resultado})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/buscar', methods=['POST'])
+def buscar():
+    """Búsqueda RAG en documentos"""
+    try:
+        query = request.form.get('q', '')
+        tipo = request.form.get('tipo', 'todos')
+        
+        if not RAG_AVAILABLE:
+            return render_template('index.html', error='RAG no disponible')
+        
+        search = REBT_Search()
+        
+        if tipo == 'normativa':
+            results = search.buscar_normativa(query)
+        elif tipo == 'ejercicios':
+            results = search.buscar_ejercicios(query)
+        elif tipo == 'proyectos':
+            results = search.buscar_proyectos(query)
+        else:
+            results = search.buscar(query)
+        
+        return render_template('index.html',
+                           opcion='buscar',
+                           query=query,
+                           resultados_busqueda=results)
+    except Exception as e:
+        return render_template('index.html', error=str(e))
+
+
+@app.route('/ver-resultados', methods=['POST'])
+def ver_resultados():
+    """Ver todos los resultados en nueva página"""
+    try:
+        query = request.form.get('query', '')
+        tipo = request.form.get('tipo', 'todos')
+        
+        if not RAG_AVAILABLE:
+            return "RAG no disponible"
+        
+        search = REBT_Search()
+        
+        if tipo == 'normativa':
+            results = search.buscar_normativa(query, n_resultados=20)
+        elif tipo == 'ejercicios':
+            results = search.buscar_ejercicios(query, n_resultados=20)
+        elif tipo == 'proyectos':
+            results = search.buscar_proyectos(query, n_resultados=20)
+        else:
+            results = search.buscar(query, n_resultados=20)
+        
+        html = f"<html><head><title>Resultados: {query}</title></head><body style='font-family: sans-serif; padding: 20px; background: #0f172a; color: #e2e8f0;'>"
+        html += f"<h1>Resultados para: '{query}'</h1>"
+        html += f"<p style='color: #94a3b8;'>{len(results)} encontrados</p><hr>"
+        
+        for i, r in enumerate(results, 1):
+            similitud = int(r.get('similitud', 0) * 100)
+            html += f"<div style='background: #1e293b; padding: 16px; margin: 12px 0; border-radius: 8px;'>"
+            html += f"<h3 style='color: #22d3ee; margin: 0;'>{i}. {r['fuente']} ({r['tipo']})</h3>"
+            html += f"<p style='color: #94a3b8; font-size: 12px;'>Relevancia: {similitud}%</p>"
+            html += f"<p style='color: #cbd5e1;'>{r['texto']}</p>"
+            html += "</div><hr>"
+        
+        html += "<a href='/' style='color: #22d3ee;'>← Volver</a></body></html>"
+        
+        return html
+    except Exception as e:
+        return f"Error: {e}"
+
+
+@app.route('/resolver', methods=['POST'])
+def resolver():
+    """Resolver ejercicio REBT"""
+    try:
+        pregunta = request.form.get('pregunta', '')
+        ayuda = request.form.get('ayuda', 'no') == 'si'
+        
+        if not RESOLUTOR_AVAILABLE:
+            return render_template('index.html', error='Resolutor no disponible')
+        
+        resultado = resolver_ejercicio(pregunta)
+        
+        ayuda_rag = []
+        if ayuda and RAG_AVAILABLE:
+            search = REBT_Search()
+            ayuda_rag = search.buscar_ejercicios(pregunta)[:3]
+        
+        return render_template('index.html',
+                           opcion='resolver',
+                           pregunta=pregunta,
+                           resultado_ejercicio=resultado,
+                           ayuda_rag=ayuda_rag)
+    except Exception as e:
+        return render_template('index.html', error=str(e))
+
+
+@app.route('/download/mem', methods=['POST'])
+def download_mem():
+    """Descargar MEM"""
+    try:
+        tipo = request.form.get('tipo', 'vivienda')
+        datos = {
+            'puntos_luz': int(request.form.get('puntos_luz', 20)),
+            'tomas': int(request.form.get('tomas', 20)),
+            'cocina': request.form.get('cocina') == 'si',
+            'longitud': int(request.form.get('longitud', 25)),
+            'n_viviendas_basicas': int(request.form.get('n_basicas', 4)),
+            'n_viviendas_elevadas': int(request.form.get('n_elevadas', 6)),
+            'potencia_servicios': int(request.form.get('potencia_servicios', 0)),
+        }
+        
+        mem = generar_mem_txt(datos, tipo)
+        filename = f"mem_{tipo}_{datetime.now().strftime('%Y%m%d')}.txt"
+        guardar_mem(mem, filename)
+        
+        return Response(
+            mem,
+            mimetype='text/plain',
+            headers={'Content-disposition': f'attachment; filename={filename}'}
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/generar-proyecto', methods=['POST'])
+def generar_proyecto_route():
+    """Generar proyecto"""
+    try:
+        datos = {
+            'tipo': request.form.get('tipo', 'vivienda'),
+            'nombre': request.form.get('nombre', 'Proyecto'),
+            'direccion': request.form.get('direccion', ''),
+            'superficie': int(request.form.get('superficie', 100)),
+            'potencia': int(request.form.get('potencia', 5000)),
+            'puntos_luz': int(request.form.get('puntos_luz', 20)),
+            'tomas': int(request.form.get('tomas', 20)),
+            'cocina': request.form.get('cocina') == 'si',
+            'longitud': int(request.form.get('longitud', 25)),
+        }
+        
+        proyecto = generar_proyecto(datos)
+        filename = f"proyecto_{datos['tipo']}_{datetime.now().strftime('%Y%m%d')}.txt"
+        guardar_proyecto(proyecto, filename)
+        
+        return Response(
+            proyecto,
+            mimetype='text/plain',
+            headers={'Content-disposition': f'attachment; filename={filename}'}
+        )
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+
+@app.route('/download/svg', methods=['POST'])
+def download_svg():
+    """Descargar diagrama unifilar SVG"""
+    try:
+        tipo = request.form.get('tipo', 'vivienda')
+        
+        if tipo == 'vivienda':
+            puntos_luz = int(request.form.get('puntos_luz', 20))
+            Tomas = int(request.form.get('tomas', 20))
+            datos = calcular_circuitos_vivienda(puntos_luz, Tomas)
+            svg = generar_svg_profesional(datos, tipo="EB")
+        else:
+            n_basicas = int(request.form.get('n_basicas', 2))
+            n_elevadas = int(request.form.get('n_elevadas', 2))
+            datos = calcular_edificio(n_basicas, n_elevadas)
+            svg = generar_svg_profesional(datos, tipo="EE")
+        
+        return Response(
+            svg_a_bytes(svg),
+            mimetype='image/svg+xml',
+            headers={'Content-disposition': 'attachment; filename=esquema_unifilar.svg'}
+        )
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 

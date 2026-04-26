@@ -26,8 +26,9 @@
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
         .form-group { }
         .form-group label { display: block; color: #94a3b8; margin-bottom: 6px; font-size: 13px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border-radius: 6px;
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border-radius: 6px;
               border: 1px solid #334155; background: #0f172a; color: #e2e8f0; font-size: 14px; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
         .form-group input:focus { outline: none; border-color: #22d3ee; }
         
         .checkbox-group { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
@@ -67,6 +68,11 @@
         
         .scheme { background: #0f172a; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 12px; 
                   overflow-x: auto; white-space: pre; color: #22d3ee; }
+        
+        .search-result { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
+        .search-result h4 { color: #22d3ee; margin-bottom: 6px; font-size: 13px; }
+        .search-result p { color: #94a3b8; font-size: 12px; line-height: 1.5; }
+        .search-result .meta { color: #64748b; font-size: 11px; margin-top: 8px; }
     </style>
 </head>
 <body>
@@ -83,6 +89,9 @@
             <button class="tab {% if opcion == 'edificio' %}active{% endif %}" onclick="showTab('edificio')">Edificio</button>
             <button class="tab {% if opcion == 'circuito' %}active{% endif %}" onclick="showTab('circuito')">Circuito</button>
             <button class="tab {% if opcion == 'di' %}active{% endif %}" onclick="showTab('di')">DI</button>
+            <button class="tab {% if opcion == 'resolver' %}active{% endif %}" onclick="showTab('resolver')">📝 Ejercicios</button>
+            <button class="tab {% if opcion == 'proyecto' %}active{% endif %}" onclick="showTab('proyecto')">📋 Proyecto</button>
+            <button class="tab {% if opcion == 'buscar' %}active{% endif %}" onclick="showTab('buscar')">🔍 Buscar</button>
         </div>
         
         <!-- VIVIENDA -->
@@ -90,9 +99,15 @@
             <div class="card">
                 <h2>UF0887 - Circuitos de Vivienda (ITC-BT-25)</h2>
                 
-                <div class="info-box">
+<div class="info-box">
                     <h3>Electrificación básica/elevada</h3>
-                    <p>Cálculo automático de circuitos C1-C9 según número de puntos de luz, tomas y electrodomésticos.</p>
+                    <p>Cálculo automático de circuitos C1-C13 según número de puntos de luz, tomas y electrodomésticos.</p>
+                    <div style="margin-top: 12px;">
+                        <button type="button" class="btn" style="padding: 6px 12px; font-size: 12px; width: auto; margin: 2px;" onclick="preset(10, 15)">Básica</button>
+                        <button type="button" class="btn" style="padding: 6px 12px; font-size: 12px; width: auto; margin: 2px;" onclick="preset(20, 20)">Estándar</button>
+                        <button type="button" class="btn" style="padding: 6px 12px; font-size: 12px; width: auto; margin: 2px;" onclick="preset(30, 25, true)">Elevada</button>
+                        <button type="button" class="btn" style="padding: 6px 12px; font-size: 12px; width: auto; margin: 2px; background: #f59e0b;" onclick="preset(40, 30, true, true)">Completa</button>
+                    </div>
                 </div>
                 
                 <form method="POST" action="/calcular-vivienda">
@@ -124,6 +139,16 @@
                     </div>
                     <button type="submit" class="btn">Calcular</button>
                 </form>
+                
+                {% if resultado_vivienda %}
+                <form method="POST" action="/download/mem" target="_blank">
+                    <input type="hidden" name="tipo" value="vivienda">
+                    <input type="hidden" name="puntos_luz" value="{{ resultado_vivienda.potencia_total }}">
+                    <input type="hidden" name="tomas" value="20">
+                    <input type="hidden" name="longitud" value="25">
+                    <button type="submit" class="btn" style="background: #10b981; margin-top: 8px;">📥 Descargar MEM</button>
+                </form>
+                {% endif %}
                 
                 {% if resultado_vivienda %}
                 <div class="result-box">
@@ -175,6 +200,13 @@
                         <span class="result-label">Potencia</span>
                         <span class="result-value">{{ resultado_vivienda.derivacion_individual.potencia }} W</span>
                     </div>
+                    
+                    <form method="POST" action="/download/svg" target="_blank">
+                        <input type="hidden" name="tipo" value="vivienda">
+                        <input type="hidden" name="puntos_luz" value="{{ resultado_vivienda.potencia_total }}">
+                        <input type="hidden" name="tomas" value="20">
+                        <button type="submit" class="btn" style="background: #8b5cf6; margin-top: 12px;">🎨 Descargar Diagrama SVG</button>
+                    </form>
                 </div>
                 
                 {% if esquema %}
@@ -432,6 +464,178 @@
                 {% endif %}
             </div>
         </div>
+        
+        <!-- BUSCAR -->
+        <div id="buscar" class="tab-content {% if opcion == 'buscar' %}active{% endif %}">
+            <div class="card">
+                <h2>🔍 Buscar en Documentos</h2>
+                
+                <div class="info-box">
+                    <h3>Búsqueda en normativa y ejercicios</h3>
+                    <p>Busca en el REBT y ejercicios del proyecto usando RAG.</p>
+                </div>
+                
+                <form method="POST" action="/buscar">
+                    <div class="form-grid">
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Tu pregunta</label>
+                            <input type="text" name="q" value="{{ query or '' }}" placeholder="Ej: ITC-BT-25 circuitos vivienda">
+                        </div>
+                        <div class="form-group">
+                            <label>Buscar en</label>
+                            <select name="tipo">
+                                <option value="todos">Todos los documentos</option>
+                                <option value="normativa">Solo normativa</option>
+                                <option value="ejercicios">Solo ejercicios</option>
+                                <option value="proyectos">Solo proyectos</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">Buscar</button>
+                </form>
+                
+                {% if resultados_busqueda %}
+                <div style="margin-top: 20px;">
+                    <p style="color: #94a3b8; margin-bottom: 12px;">{{ resultados_busqueda|length }} resultados para "{{ query }}"</p>
+                    
+                    <form method="POST" action="/ver-resultados" target="_blank">
+                        <input type="hidden" name="query" value="{{ query }}">
+                        <input type="hidden" name="tipo" value="{{ request.form.get('tipo', 'todos') }}">
+                        <button type="submit" class="btn" style="background: #6366f1; width: auto; padding: 8px 16px;">📄 Ver todos los resultados</button>
+                    </form>
+                    <br><br>
+                    
+                    {% for r in resultados_busqueda %}
+                    <div class="search-result">
+                        <h4>{{ r.fuente }} ({{ r.tipo }})</h4>
+                        <p>{{ r.texto[:300] }}...</p>
+                        <div class="meta">Relevancia: {{ (r.similitud * 100)|int }}%</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- RESOLVER EJERCICIOS -->
+        <div id="resolver" class="tab-content {% if opcion == 'resolver' %}active{% endif %}">
+            <div class="card">
+                <h2>📝 Resolver Ejercicios</h2>
+                
+                <div class="info-box">
+                    <h3>Resolución paso a paso</h3>
+                    <p>Escribe un ejercicio y lo resolveremos con el procedimiento correcto según REBT.</p>
+                </div>
+                
+                <form method="POST" action="/resolver">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>Enunciado del ejercicio</label>
+                        <textarea name="pregunta" rows="3" placeholder="Ej: Calcular una acometida trifásica de 45kW, longitud 15m, 400V, fp=0.9">{{ pregunta or '' }}</textarea>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="ayuda" value="si"> Añadir ayuda de documentos
+                        </label>
+                    </div>
+                    <button type="submit" class="btn">Resolver</button>
+                </form>
+                
+                {% if resultado_ejercicio %}
+                <div class="result-box" style="margin-top: 20px;">
+                    <h3>Pasos de resolución</h3>
+                    {% for paso in resultado_ejercicio.pasos %}
+                    <div class="result-item">
+                        <span class="result-label">{{ paso }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="result-box">
+                    <h3>Resultado</h3>
+                    {% if resultado_ejercicio.resultado.seccion %}
+                    <div class="result-item">
+                        <span class="result-label">Sección</span>
+                        <span class="result-value">{{ resultado_ejercicio.resultado.seccion }} mm²</span>
+                    </div>
+                    {% endif %}
+                    {% if resultado_ejercicio.resultado.proteccion %}
+                    <div class="result-item">
+                        <span class="result-label">Protección</span>
+                        <span class="result-value">{{ resultado_ejercicio.resultado.proteccion }} A</span>
+                    </div>
+                    {% endif %}
+                    {% if resultado_ejercicio.resultado.tubo %}
+                    <div class="result-item">
+                        <span class="result-label">Tubo</span>
+                        <span class="result-value">{{ resultado_ejercicio.resultado.tubo }} mm</span>
+                    </div>
+                    {% endif %}
+                    {% if resultado_ejercicio.resultado.intensidad %}
+                    <div class="result-item">
+                        <span class="result-label">Intensidad</span>
+                        <span class="result-value">{{ resultado_ejercicio.resultado.intensidad }} A</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+                
+                {% if ayuda_rag %}
+                <div style="margin-top: 20px;">
+                    <h3 style="color: #22d3ee; margin-bottom: 12px;">📚 Ayuda adicional</h3>
+                    {% for r in ayuda_rag %}
+                    <div class="search-result">
+                        <h4>{{ r.fuente }}</h4>
+                        <p>{{ r.texto[:250] }}...</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- PROYECTO -->
+        <div id="proyecto" class="tab-content {% if opcion == 'proyecto' %}active{% endif %}">
+            <div class="card">
+                <h2>📋 Generar Proyecto</h2>
+                
+                <div class="info-box">
+                    <h3>Generador de proyectos</h3>
+                    <p>Crea un proyecto completo basado en tus 5 proyectos reales.</p>
+                </div>
+                
+                <form method="POST" action="/generar-proyecto" target="_blank">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tipo</label>
+                            <select name="tipo">
+                                <option value="vivienda">Vivienda</option>
+                                <option value="local">Local Comercial</option>
+                                <option value="nave">Nave Industrial</option>
+                                <option value="oficina">Oficina</option>
+                                <option value="bar">Bar/Restaurante</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" name="nombre" placeholder="Mi Proyecto">
+                        </div>
+                        <div class="form-group">
+                            <label>Dirección</label>
+                            <input type="text" name="direccion" placeholder="Calle...">
+                        </div>
+                        <div class="form-group">
+                            <label>Superficie (m²)</label>
+                            <input type="number" name="superficie" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Potencia (W)</label>
+                            <input type="number" name="potencia" value="5000">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">📥 Generar Proyecto</button>
+                </form>
+            </div>
+        </div>
     </div>
     
     <script>
@@ -441,6 +645,18 @@
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
             localStorage.setItem('rebt_tab', tabId);
+        }
+        
+        function preset(puntos, Tomas, cocina, extra) {
+            document.querySelector('input[name="puntos_luz"]').value = puntos;
+            document.querySelector('input[name="tomas"]').value = Tomas;
+            if (cocina !== undefined) {
+                document.querySelector('input[name="cocina"]').checked = cocina;
+            }
+            if (extra !== undefined) {
+                document.querySelector('input[name="aire_ac"]').checked = extra;
+                document.querySelector('input[name="calefaccion"]').checked = extra;
+            }
         }
         
         // Restore tab
