@@ -3,92 +3,499 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora REBT</title>
+    <title>⚡ REBT Calculator - Instalaciones Eléctricas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --accent: #00d4ff;
+            --accent-hover: #00a8cc;
+            --accent-secondary: #7c3aed;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --border: #2d2d4a;
+            --glow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-               background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); 
-               min-height: 100vh; padding: 20px; color: #e2e8f0; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        h1 { color: #f8fafc; text-align: center; margin-bottom: 5px; }
-        .subtitle { color: #94a3b8; text-align: center; margin-bottom: 20px; font-size: 14px; }
         
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab { padding: 12px 20px; background: #334155; color: #e2e8f0; border: none;
-              cursor: pointer; border-radius: 8px; transition: all 0.3s; flex: 1; 
-              min-width: 140px; text-align: center; font-size: 14px; }
-        .tab:hover { background: #475569; }
-        .tab.active { background: #22d3ee; color: #0f172a; font-weight: bold; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(ellipse at top, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(0, 212, 255, 0.1) 0%, transparent 50%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
         
-        .card { background: #1e293b; border-radius: 12px; padding: 24px; margin-bottom: 20px; }
-        .card h2 { color: #22d3ee; margin-bottom: 16px; font-size: 18px; border-bottom: 1px solid #334155; padding-bottom: 8px; }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
         
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
-        .form-group { }
-        .form-group label { display: block; color: #94a3b8; margin-bottom: 6px; font-size: 13px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border-radius: 6px;
-              border: 1px solid #334155; background: #0f172a; color: #e2e8f0; font-size: 14px; }
-        .form-group textarea { min-height: 80px; resize: vertical; }
-        .form-group input:focus { outline: none; border-color: #22d3ee; }
+        /* Header */
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+            position: relative;
+        }
         
-        .checkbox-group { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 8px; }
-        .checkbox-item { display: flex; align-items: center; gap: 6px; color: #e2e8f0; }
-        .checkbox-item input { width: auto; }
+        header::before {
+            content: '⚡';
+            font-size: 60px;
+            display: block;
+            margin-bottom: 10px;
+            animation: pulse 2s ease-in-out infinite;
+        }
         
-        .btn { width: 100%; padding: 12px; background: #22d3ee; color: #0f172a; border: none;
-               border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer;
-               transition: all 0.3s; margin-top: 16px; }
-        .btn:hover { background: #06b6d4; transform: translateY(-1px); }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
         
-        table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #334155; }
-        th { color: #22d3ee; font-weight: 600; }
-        td { color: #cbd5e1; }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
         
-        .result-box { background: #0f172a; border-radius: 8px; padding: 16px; margin-top: 16px; }
-        .result-box h3 { color: #22d3ee; margin-bottom: 12px; font-size: 14px; }
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 300;
+        }
         
-        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #334155; }
-        .result-item:last-child { border-bottom: none; }
-        .result-label { color: #94a3b8; }
-        .result-value { color: #f8fafc; font-weight: 600; }
+        .badge-version {
+            display: inline-block;
+            background: var(--accent-secondary);
+            color: white;
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
         
-        .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; }
-        .badge-basica { background: #22c55e; color: #0f172a; }
-        .badge-elevada { background: #f59e0b; color: #0f172a; }
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: var(--bg-secondary);
+            padding: 6px;
+            border-radius: 16px;
+        }
         
-        .error { background: #dc2626; color: #fff; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+        .tab {
+            padding: 12px 20px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+        }
         
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab:hover {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent);
+        }
         
-        .info-box { background: #1e3a5f; border: 1px solid #22d3ee; border-radius: 8px; padding: 16px; margin-bottom: 20px; }
-        .info-box h3 { color: #22d3ee; margin-bottom: 8px; font-size: 14px; }
-        .info-box p { color: #94a3b8; font-size: 13px; line-height: 1.5; }
+        .tab.active {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            color: var(--bg-primary);
+            font-weight: 600;
+            box-shadow: var(--glow);
+        }
         
-        .scheme { background: #0f172a; padding: 16px; border-radius: 8px; font-family: monospace; font-size: 12px; 
-                  overflow-x: auto; white-space: pre; color: #22d3ee; }
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
         
-        .search-result { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 12px; }
-        .search-result h4 { color: #22d3ee; margin-bottom: 6px; font-size: 13px; }
-        .search-result p { color: #94a3b8; font-size: 12px; line-height: 1.5; }
-        .search-result .meta { color: #64748b; font-size: 11px; margin-top: 8px; }
+        .card:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card h2 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        /* Checkboxes */
+        .checkbox-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-secondary);
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .checkbox-item:hover {
+            border-color: var(--accent);
+        }
+        
+        .checkbox-item input {
+            width: auto;
+            accent-color: var(--accent);
+        }
+        
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-secondary) 100%);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+        
+        .btn-small {
+            padding: 10px 16px;
+            font-size: 12px;
+            width: auto;
+            text-transform: none;
+        }
+        
+        /* Info Box */
+        .info-box {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .info-box h3 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .info-box p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        /* Results */
+        .result-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border);
+        }
+        
+        .result-box h3 {
+            color: var(--accent);
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        
+        .result-value {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .result-value.highlight {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            font-size: 13px;
+        }
+        
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        td {
+            color: var(--text-secondary);
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-basica {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .badge-elevada {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+        
+        /* Errors */
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+        
+        /* Tabs Content */
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Scheme */
+        .scheme {
+            background: var(--bg-primary);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            overflow-x: auto;
+            white-space: pre;
+            color: var(--accent);
+            border: 1px solid var(--border);
+        }
+        
+        /* Search Results */
+        .search-result {
+            background: var(--bg-secondary);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+        
+        .search-result h4 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+        
+        .search-result p {
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .search-result .meta {
+            color: var(--text-muted);
+            font-size: 11px;
+            margin-top: 10px;
+        }
+        
+        /* Footer credit */
+        .credits {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .tabs { gap: 4px; }
+            .tab { padding: 10px 14px; font-size: 12px; }
+            .card { padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+        
+        /* Presets buttons */
+        .presets {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .preset-btn {
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .preset-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Calculadora REBT</h1>
-        <p class="subtitle">UF0884 • UF0885 • UF0887 • UF0888</p>
+        <header>
+            <h1>REBT Calculator</h1>
+            <p class="subtitle">Instalaciones Eléctricas de Baja Tensión<span class="badge-version">v2.0</span></p>
+        </header>
         
         {% if error %}
         <div class="error">{{ error }}</div>
         {% endif %}
         
         <div class="tabs">
-            <button class="tab {% if opcion == 'vivienda' %}active{% endif %}" onclick="showTab('vivienda')">Vivienda</button>
-            <button class="tab {% if opcion == 'edificio' %}active{% endif %}" onclick="showTab('edificio')">Edificio</button>
-            <button class="tab {% if opcion == 'circuito' %}active{% endif %}" onclick="showTab('circuito')">Circuito</button>
-            <button class="tab {% if opcion == 'di' %}active{% endif %}" onclick="showTab('di')">DI</button>
+            <button class="tab {% if opcion == 'vivienda' %}active{% endif %}" onclick="showTab('vivienda')">🏠 Vivienda</button>
+            <button class="tab {% if opcion == 'edificio' %}active{% endif %}" onclick="showTab('edificio')">🏢 Edificio</button>
+            <button class="tab {% if opcion == 'circuito' %}active{% endif %}" onclick="showTab('circuito')">⚡ Circuito</button>
+            <button class="tab {% if opcion == 'di' %}active{% endif %}" onclick="showTab('di')">🔌 DI</button>
             <button class="tab {% if opcion == 'resolver' %}active{% endif %}" onclick="showTab('resolver')">📝 Ejercicios</button>
             <button class="tab {% if opcion == 'proyecto' %}active{% endif %}" onclick="showTab('proyecto')">📋 Proyecto</button>
             <button class="tab {% if opcion == 'buscar' %}active{% endif %}" onclick="showTab('buscar')">🔍 Buscar</button>
@@ -97,61 +504,65 @@
         <!-- VIVIENDA -->
         <div id="vivienda" class="tab-content {% if opcion == 'vivienda' %}active{% endif %}">
             <div class="card">
-                <h2>UF0887 - Circuitos de Vivienda (ITC-BT-25)</h2>
+                <h2>🏠 Circuitos de Vivienda (ITC-BT-25)</h2>
                 
-<div class="info-box">
-                    <h3>Electrificación básica/elevada</h3>
-                    <p>Cálculo automático de circuitos C1-C13 según número de puntos de luz, tomas y electrodomésticos.</p>
-                    <div style="margin-top: 12px;">
-                        <button type="button" class="btn" style="padding: 6px 12px; font-size: 12px; width: auto; margin: 2px;" onclick="preset(10, 15)">Básica</button>
-                        <button type="button" class="btn" style="padding: 6px 12px; font-size: 12px; width: auto; margin: 2px;" onclick="preset(20, 20)">Estándar</button>
-                        <button type="button" class="btn" style="padding: 6px 12px; font-size: 12px; width: auto; margin: 2px;" onclick="preset(30, 25, true)">Elevada</button>
-                        <button type="button" class="btn" style="padding: 6px 12px; font-size: 12px; width: auto; margin: 2px; background: #f59e0b;" onclick="preset(40, 30, true, true)">Completa</button>
+                <div class="info-box">
+                    <h3>📖 Electrificación Básica / Elevada</h3>
+                    <p>Cálculo automático de circuitos C1-C13 según ITC-BT-25. Selecciona presets o configura manualmente.</p>
+                </div>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>💡 Puntos de luz</label>
+                        <input type="number" name="puntos_luz" value="20" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>🔌 Tomas de corriente</label>
+                        <input type="number" name="tomas" value="25" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>📏 Longitud media (m)</label>
+                        <input type="number" name="longitud" value="25" min="1">
+                    </div>
+                </div>
+                
+                <div class="presets">
+                    <button type="button" class="preset-btn" onclick="setValues(10, 15, false)">Basica</button>
+                    <button type="button" class="preset-btn" onclick="setValues(20, 20, false)">Estándar</button>
+                    <button type="button" class="preset-btn" onclick="setValues(30, 25, true)">Elevada</button>
+                    <button type="button" class="preset-btn" onclick="setValues(40, 30, true)">Completa</button>
+                </div>
+                
+                <div class="form-group" style="margin-top: 16px;">
+                    <label>⚙️ Equipamiento</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item"><input type="checkbox" name="lavadora"> 🧺 Lavadora</label>
+                        <label class="checkbox-item"><input type="checkbox" name="cocina"> 🍳 Cocina/Horno</label>
+                        <label class="checkbox-item"><input type="checkbox" name="secadora"> 👕 Secadora</label>
+                        <label class="checkbox-item"><input type="checkbox" name="aire_ac"> ❄️ A. Acondicionado</label>
+                        <label class="checkbox-item"><input type="checkbox" name="calefaccion"> 🔥 Calefacción</label>
+                        <label class="checkbox-item"><input type="checkbox" name="domotica"> 🤖 Domótica</label>
+                        <label class="checkbox-item"><input type="checkbox" name="recarga_ve"> 🚗 Recarga VE</label>
                     </div>
                 </div>
                 
                 <form method="POST" action="/calcular-vivienda">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Puntos de luz</label>
-                            <input type="number" name="puntos_luz" value="20" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Tomas de corriente</label>
-                            <input type="number" name="tomas" value="25" min="1">
-                        </div>
-                        <div class="form-group">
-                            <label>Longitud média (m)</label>
-                            <input type="number" name="longitud" value="25" min="1">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Equipamiento (marca los que tengas)</label>
-                        <div class="checkbox-group">
-                            <label class="checkbox-item"><input type="checkbox" name="lavadora"> Lavadora</label>
-                            <label class="checkbox-item"><input type="checkbox" name="cocina"> Cocina/Horno</label>
-                            <label class="checkbox-item"><input type="checkbox" name="secadora"> Secadora</label>
-                            <label class="checkbox-item"><input type="checkbox" name="aire_ac"> A. Acondicionado</label>
-                            <label class="checkbox-item"><input type="checkbox" name="calefaccion"> Calefacción</label>
-                            <label class="checkbox-item"><input type="checkbox" name="domotica"> Domótica</label>
-                            <label class="checkbox-item"><input type="checkbox" name="recarga_ve"> Recarga VE</label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn">Calcular</button>
+                    <input type="hidden" name="puntos_luz" id="puntos_luz" value="20">
+                    <input type="hidden" name="tomas" id="tomas" value="25">
+                    <input type="hidden" name="longitud" id="longitud" value="25">
+                    <input type="hidden" name="lavadora" id="lavadora">
+                    <input type="hidden" name="cocina" id="cocina">
+                    <input type="hidden" name="secadora" id="secadora">
+                    <input type="hidden" name="aire_ac" id="aire_ac">
+                    <input type="hidden" name="calefaccion" id="calefaccion">
+                    <input type="hidden" name="domotica" id="domotica">
+                    <input type="hidden" name="recarga_ve" id="recarga_ve">
+                    <button type="submit" class="btn">⚡ Calcular Instalación</button>
                 </form>
-                
-                {% if resultado_vivienda %}
-                <form method="POST" action="/download/mem" target="_blank">
-                    <input type="hidden" name="tipo" value="vivienda">
-                    <input type="hidden" name="puntos_luz" value="{{ resultado_vivienda.potencia_total }}">
-                    <input type="hidden" name="tomas" value="20">
-                    <input type="hidden" name="longitud" value="25">
-                    <button type="submit" class="btn" style="background: #10b981; margin-top: 8px;">📥 Descargar MEM</button>
-                </form>
-                {% endif %}
                 
                 {% if resultado_vivienda %}
                 <div class="result-box">
+                    <h3>📊 Resultados</h3>
                     <div class="result-item">
                         <span class="result-label">Electrificación</span>
                         <span class="result-value">
@@ -162,7 +573,7 @@
                     </div>
                     <div class="result-item">
                         <span class="result-label">Potencia total</span>
-                        <span class="result-value">{{ resultado_vivienda.potencia_total }} W</span>
+                        <span class="result-value highlight">{{ resultado_vivienda.potencia_total }} W</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">IGA</span>
@@ -171,7 +582,7 @@
                 </div>
                 
                 <table>
-                    <thead><tr><th>Circ</th><th>Descripción</th><th>P(W)</th><th>I(A)</th><th>Sección</th><th>PIA</th><th>Tubo</th></tr></thead>
+                    <thead><tr><th>Circ.</th><th>Descripción</th><th>P(W)</th><th>I(A)</th><th>Sección</th><th>PIA</th><th>Tubo</th></tr></thead>
                     <tbody>
                     {% for c in resultado_vivienda.circuitos %}
                     <tr>
@@ -184,13 +595,14 @@
                         <td>{{ c.tubo }}mm</td>
                     </tr>
                     {% endfor %}
+                    </tbody>
                 </table>
                 
                 <div class="result-box">
-                    <h3>Derivación Individual</h3>
+                    <h3>🔌 Derivación Individual</h3>
                     <div class="result-item">
                         <span class="result-label">Sección</span>
-                        <span class="result-value">{{ resultado_vivienda.derivacion_individual.seccion }} mm²</span>
+                        <span class="result-value highlight">{{ resultado_vivienda.derivacion_individual.seccion }} mm²</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">Tubo</span>
@@ -200,83 +612,65 @@
                         <span class="result-label">Potencia</span>
                         <span class="result-value">{{ resultado_vivienda.derivacion_individual.potencia }} W</span>
                     </div>
-                    
-                    <form method="POST" action="/download/svg" target="_blank">
-                        <input type="hidden" name="tipo" value="vivienda">
-                        <input type="hidden" name="puntos_luz" value="{{ resultado_vivienda.potencia_total }}">
-                        <input type="hidden" name="tomas" value="20">
-                        <button type="submit" class="btn" style="background: #8b5cf6; margin-top: 12px;">🎨 Descargar Diagrama SVG</button>
-                    </form>
                 </div>
                 
                 {% if esquema %}
-                <div class="scheme">
-                    {{ esquema }}
-                </div>
+                <div class="scheme">{{ esquema }}</div>
                 {% endif %}
-            {% endif %}
+                {% endif %}
             </div>
         </div>
         
         <!-- EDIFICIO -->
         <div id="edificio" class="tab-content {% if opcion == 'edificio' %}active{% endif %}">
             <div class="card">
-                <h2>UF0884 - Instalaciones de Enlace</h2>
-                
-                <div class="info-box">
-                    <h3>CGP, LGA, Centralización, DI</h3>
-                    <p>Cálculo de línea general de alimentación y derivaciones individuales de edificio.</p>
-                </div>
-                
+                <h2>🏢 Instalaciones de Enlace (ITC-BT-10)</h2>
                 <form method="POST" action="/calcular-edificio">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Viviendas básicas</label>
+                            <label>🏠 Viviendas básicas</label>
                             <input type="number" name="n_viviendas_basicas" value="4" min="0">
                         </div>
                         <div class="form-group">
-                            <label>Viviendas elevadas</label>
+                            <label>🏡 Viviendas elevadas</label>
                             <input type="number" name="n_viviendas_elevadas" value="6" min="0">
                         </div>
                         <div class="form-group">
-                            <label>Longitud LGA (m)</label>
+                            <label>📏 Longitud LGA (m)</label>
                             <input type="number" name="longitud_lga" value="10" min="1">
                         </div>
                         <div class="form-group">
-                            <label>Longitud DI (m)</label>
+                            <label>📏 Longitud DI (m)</label>
                             <input type="number" name="longitud_di" value="15" min="1">
                         </div>
                     </div>
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Potencia servicios (W)</label>
+                            <label>⚡ Potencia servicios (W)</label>
                             <input type="number" name="potencia_servicios" value="0" min="0" placeholder="0 = auto">
                         </div>
                         <div class="form-group">
-                            <label>Superficie local (m²)</label>
+                            <label>📐 Superficie local (m²)</label>
                             <input type="number" name="superficie_local" value="0" min="0">
                         </div>
                         <div class="form-group">
-                            <label>Superficie garaje (m²)</label>
+                            <label>🚗 Superficie garaje (m²)</label>
                             <input type="number" name="superficie_garaje" value="0" min="0">
                         </div>
                         <div class="form-group">
-                            <label>Ventilación garaje</label>
+                            <label>💨 Ventilación garaje</label>
                             <select name="ventilacion_garaje">
                                 <option value="natural">Natural</option>
                                 <option value="forzada">Forzada</option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label><input type="checkbox" name="es_trifasica"> Alimentación trifásica</label>
-                    </div>
-                    <button type="submit" class="btn">Calcular</button>
+                    <button type="submit" class="btn">⚡ Calcular Edificio</button>
                 </form>
                 
                 {% if resultado_edificio %}
                 <div class="result-box">
-                    <h3>Previsión de carga</h3>
+                    <h3>📊 Previsión de carga</h3>
                     <div class="result-item">
                         <span class="result-label">Nº viviendas</span>
                         <span class="result-value">{{ resultado_edificio.num_viviendas }}</span>
@@ -286,58 +680,21 @@
                         <span class="result-value">{{ resultado_edificio.coef_simultaneidad }}</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">Potencia viviendas</span>
-                        <span class="result-value">{{ resultado_edificio.potencia_viviendas|int }} W</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Potencia servicios</span>
-                        <span class="result-value">{{ resultado_edificio.potencia_servicios|int }} W</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Potencia local</span>
-                        <span class="result-value">{{ resultado_edificio.potencia_local|int }} W</span>
-                    </div>
-                    <div class="result-item">
                         <span class="result-label">Potencia total</span>
-                        <span class="result-value">{{ resultado_edificio.potencia_total|int }} W</span>
+                        <span class="result-value highlight">{{ resultado_edificio.potencia_total|int }} W</span>
                     </div>
                 </div>
-                
                 <div class="result-box">
-                    <h3>Línea General de Alimentación</h3>
+                    <h3>⚡ LGA</h3>
                     <div class="result-item">
                         <span class="result-label">Sección</span>
                         <span class="result-value">{{ resultado_edificio.lga.seccion }} mm²</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Tubo</span>
-                        <span class="result-value">{{ resultado_edificio.lga.tubo }} mm</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Intensidad</span>
-                        <span class="result-value">{{ resultado_edificio.lga.intensidad }} A</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">Fusible CGP</span>
                         <span class="result-value">{{ resultado_edificio.lga.fusible }} A</span>
                     </div>
                 </div>
-                
-                <table>
-                    <thead><tr><th>Vivienda</th><th>Tipo</th><th>P(W)</th><th>I(A)</th><th>Sección</th><th>Tubo</th></tr></thead>
-                    <tbody>
-                    {% for di in resultado_edificio.derivaciones_individuales[:8] %}
-                    <tr>
-                        <td>{{ di.vivienda }}</td>
-                        <td>{{ di.tipo }}</td>
-                        <td>{{ di.potencia }}</td>
-                        <td>{{ di.intensidad }}</td>
-                        <td>{{ di.seccion }} mm²</td>
-                        <td>{{ di.tubo }}mm</td>
-                    </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
                 {% endif %}
             </div>
         </div>
@@ -345,28 +702,27 @@
         <!-- CIRCUITO -->
         <div id="circuito" class="tab-content {% if opcion == 'circuito' %}active{% endif %}">
             <div class="card">
-                <h2>Cálculo de Circuito</h2>
-                
+                <h2>⚡ Cálculo de Circuito</h2>
                 <form method="POST" action="/calcular-circuito">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Potencia (W)</label>
+                            <label>⚡ Potencia (W)</label>
                             <input type="number" name="potencia" value="2000" min="1">
                         </div>
                         <div class="form-group">
-                            <label>Longitud (m)</label>
+                            <label>📏 Longitud (m)</label>
                             <input type="number" name="longitud" value="30" min="1">
                         </div>
                         <div class="form-group">
-                            <label>Tensión (V)</label>
+                            <label>🔌 Tensión (V)</label>
                             <input type="number" name="tension" value="230">
                         </div>
                         <div class="form-group">
-                            <label>Factor de potencia</label>
+                            <label>cosφ Factor de potencia</label>
                             <input type="number" name="fp" value="0.8" step="0.01" min="0.5" max="1">
                         </div>
                         <div class="form-group">
-                            <label>Tipo instalación</label>
+                            <label>🏢 Tipo instalación</label>
                             <select name="tipo_instalacion">
                                 <option value="vivienda">Vivienda</option>
                                 <option value="concurrencia">P.Concurrencia</option>
@@ -374,34 +730,26 @@
                             </select>
                         </div>
                     </div>
-                    <button type="submit" class="btn">Calcular</button>
+                    <button type="submit" class="btn">⚡ Calcular</button>
                 </form>
                 
                 {% if resultado_circuito %}
                 <div class="result-box">
                     <div class="result-item">
                         <span class="result-label">Intensidad</span>
-                        <span class="result-value">{{ resultado_circuito.intensidad }} A</span>
+                        <span class="result-value highlight">{{ resultado_circuito.intensidad }} A</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">Sección CDT</span>
                         <span class="result-value">{{ resultado_circuito.seccion_cdt }} mm²</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">Sección final</span>
-                        <span class="result-value">{{ resultado_circuito.seccion }} mm²</span>
+                        <span class="result-label">Sección</span>
+                        <span class="result-value highlight">{{ resultado_circuito.seccion }} mm²</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">PIA</span>
                         <span class="result-value">{{ resultado_circuito.pia }} A</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Tubo</span>
-                        <span class="result-value">{{ resultado_circuito.tubo }} mm</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">C.D.T. máx</span>
-                        <span class="result-value">{{ resultado_circuito.cdt_max }}%</span>
                     </div>
                 </div>
                 {% endif %}
@@ -411,27 +759,28 @@
         <!-- DI -->
         <div id="di" class="tab-content {% if opcion == 'di' %}active{% endif %}">
             <div class="card">
-                <h2>Derivación Individual</h2>
-                
+                <h2>🔌 Derivación Individual</h2>
                 <form method="POST" action="/calcular-di">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Potencia (W)</label>
+                            <label>⚡ Potencia (W)</label>
                             <input type="number" name="potencia" value="5000" min="1">
                         </div>
                         <div class="form-group">
-                            <label>Longitud (m)</label>
+                            <label>📏 Longitud (m)</label>
                             <input type="number" name="longitud" value="15" min="1">
                         </div>
                         <div class="form-group">
-                            <label>Tensión (V)</label>
+                            <label>🔌 Tensión (V)</label>
                             <input type="number" name="tension" value="230">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label><input type="checkbox" name="es_trifasica"> Trifásica</label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="es_trifasica"> ⚡ Trifásica
+                        </label>
                     </div>
-                    <button type="submit" class="btn">Calcular</button>
+                    <button type="submit" class="btn">⚡ Calcular DI</button>
                 </form>
                 
                 {% if resultado_di %}
@@ -441,27 +790,86 @@
                         <span class="result-value">{{ resultado_di.intensidad }} A</span>
                     </div>
                     <div class="result-item">
-                        <span class="result-label">Sección CDT</span>
-                        <span class="result-value">{{ resultado_di.seccion_cdt }} mm²</span>
-                    </div>
-                    <div class="result-item">
                         <span class="result-label">Sección</span>
-                        <span class="result-value">{{ resultado_di.seccion }} mm²</span>
+                        <span class="result-value highlight">{{ resultado_di.seccion }} mm²</span>
                     </div>
                     <div class="result-item">
                         <span class="result-label">IGA</span>
                         <span class="result-value">{{ resultado_di.iga }} A</span>
                     </div>
-                    <div class="result-item">
-                        <span class="result-label">Tubo</span>
-                        <span class="result-value">{{ resultado_di.tubo }} mm</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Conductores</span>
-                        <span class="result-value">{{ resultado_di.n_conductores }}</span>
-                    </div>
                 </div>
                 {% endif %}
+            </div>
+        </div>
+        
+        <!-- EJERCICIOS -->
+        <div id="resolver" class="tab-content {% if opcion == 'resolver' %}active{% endif %}">
+            <div class="card">
+                <h2>📝 Resolver Ejercicios</h2>
+                <div class="info-box">
+                    <h3>📖 Resolución paso a paso</h3>
+                    <p>Escribe un ejercicio y lo resolveremos con el procedimiento correcto según REBT.</p>
+                </div>
+                <form method="POST" action="/resolver">
+                    <div class="form-group">
+                        <label>📋 Enunciado del ejercicio</label>
+                        <textarea name="pregunta" rows="3" placeholder="Ej: Calcular una acometida trifásica de 45kW, longitud 15m, 400V, fp=0.9">{{ pregunta or '' }}</textarea>
+                    </div>
+                    <button type="submit" class="btn">📝 Resolver</button>
+                </form>
+                
+                {% if resultado_ejercicio %}
+                <div class="result-box">
+                    <h3>📊 Pasos</h3>
+                    {% for paso in resultado_ejercicio.pasos %}
+                    <div class="result-item">
+                        <span class="result-label">{{ paso }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- PROYECTO -->
+        <div id="proyecto" class="tab-content {% if opcion == 'proyecto' %}active{% endif %}">
+            <div class="card">
+                <h2>📋 Generar Proyecto</h2>
+                <div class="info-box">
+                    <h3>📖 Generador de proyectos</h3>
+                    <p>Crea un proyecto completo basado en tus proyectos de referencia.</p>
+                </div>
+                <form method="POST" action="/generar-proyecto" target="_blank">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>🏷️ Tipo</label>
+                            <select name="tipo">
+                                <option value="vivienda">Vivienda</option>
+                                <option value="local">Local Comercial</option>
+                                <option value="nave">Nave Industrial</option>
+                                <option value="oficina">Oficina</option>
+                                <option value="bar">Bar/Restaurante</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>📝 Nombre</label>
+                            <input type="text" name="nombre" placeholder="Mi Proyecto">
+                        </div>
+                        <div class="form-group">
+                            <label>📍 Dirección</label>
+                            <input type="text" name="direccion" placeholder="Calle...">
+                        </div>
+                        <div class="form-group">
+                            <label>📐 Superficie (m²)</label>
+                            <input type="number" name="superficie" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>⚡ Potencia (W)</label>
+                            <input type="number" name="potencia" value="5000">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn">📥 Generar Proyecto</button>
+                </form>
             </div>
         </div>
         
@@ -469,41 +877,35 @@
         <div id="buscar" class="tab-content {% if opcion == 'buscar' %}active{% endif %}">
             <div class="card">
                 <h2>🔍 Buscar en Documentos</h2>
-                
                 <div class="info-box">
-                    <h3>Búsqueda en normativa y ejercicios</h3>
-                    <p>Busca en el REBT y ejercicios del proyecto usando RAG.</p>
+                    <h3>📖 Búsqueda RAG</h3>
+                    <p>Busca en normativa, ejercicios y tus proyectos.</p>
                 </div>
-                
                 <form method="POST" action="/buscar">
-                    <div class="form-grid">
-                        <div class="form-group" style="grid-column: 1 / -1;">
-                            <label>Tu pregunta</label>
-                            <input type="text" name="q" value="{{ query or '' }}" placeholder="Ej: ITC-BT-25 circuitos vivienda">
-                        </div>
-                        <div class="form-group">
-                            <label>Buscar en</label>
-                            <select name="tipo">
-                                <option value="todos">Todos los documentos</option>
-                                <option value="normativa">Solo normativa</option>
-                                <option value="ejercicios">Solo ejercicios</option>
-                                <option value="proyectos">Solo proyectos</option>
-                            </select>
-                        </div>
+                    <div class="form-group">
+                        <label>🔍 Tu pregunta</label>
+                        <input type="text" name="q" value="{{ query or '' }}" placeholder="Ej: ITC-BT-25 circuitos vivienda">
                     </div>
-                    <button type="submit" class="btn">Buscar</button>
+                    <div class="form-group">
+                        <label>📂 Buscar en</label>
+                        <select name="tipo">
+                            <option value="todos">Todos los documentos</option>
+                            <option value="normativa">Solo normativa</option>
+                            <option value="ejercicios">Solo ejercicios</option>
+                            <option value="proyectos">Solo proyectos</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">🔍 Buscar</button>
                 </form>
                 
                 {% if resultados_busqueda %}
                 <div style="margin-top: 20px;">
-                    <p style="color: #94a3b8; margin-bottom: 12px;">{{ resultados_busqueda|length }} resultados para "{{ query }}"</p>
+                    <p style="color: var(--text-secondary); margin-bottom: 12px;">{{ resultados_busqueda|length }} resultados para "{{ query }}"</p>
                     
-                    <form method="POST" action="/ver-resultados" target="_blank">
+                    <form method="POST" action="/ver-resultados" target="_blank" style="margin-bottom: 16px;">
                         <input type="hidden" name="query" value="{{ query }}">
-                        <input type="hidden" name="tipo" value="{{ request.form.get('tipo', 'todos') }}">
-                        <button type="submit" class="btn" style="background: #6366f1; width: auto; padding: 8px 16px;">📄 Ver todos los resultados</button>
+                        <button type="submit" class="btn btn-secondary btn-small">📄 Ver todos los resultados</button>
                     </form>
-                    <br><br>
                     
                     {% for r in resultados_busqueda %}
                     <div class="search-result">
@@ -517,124 +919,8 @@
             </div>
         </div>
         
-        <!-- RESOLVER EJERCICIOS -->
-        <div id="resolver" class="tab-content {% if opcion == 'resolver' %}active{% endif %}">
-            <div class="card">
-                <h2>📝 Resolver Ejercicios</h2>
-                
-                <div class="info-box">
-                    <h3>Resolución paso a paso</h3>
-                    <p>Escribe un ejercicio y lo resolveremos con el procedimiento correcto según REBT.</p>
-                </div>
-                
-                <form method="POST" action="/resolver">
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label>Enunciado del ejercicio</label>
-                        <textarea name="pregunta" rows="3" placeholder="Ej: Calcular una acometida trifásica de 45kW, longitud 15m, 400V, fp=0.9">{{ pregunta or '' }}</textarea>
-                    </div>
-                    <div class="checkbox-group">
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="ayuda" value="si"> Añadir ayuda de documentos
-                        </label>
-                    </div>
-                    <button type="submit" class="btn">Resolver</button>
-                </form>
-                
-                {% if resultado_ejercicio %}
-                <div class="result-box" style="margin-top: 20px;">
-                    <h3>Pasos de resolución</h3>
-                    {% for paso in resultado_ejercicio.pasos %}
-                    <div class="result-item">
-                        <span class="result-label">{{ paso }}</span>
-                    </div>
-                    {% endfor %}
-                </div>
-                
-                <div class="result-box">
-                    <h3>Resultado</h3>
-                    {% if resultado_ejercicio.resultado.seccion %}
-                    <div class="result-item">
-                        <span class="result-label">Sección</span>
-                        <span class="result-value">{{ resultado_ejercicio.resultado.seccion }} mm²</span>
-                    </div>
-                    {% endif %}
-                    {% if resultado_ejercicio.resultado.proteccion %}
-                    <div class="result-item">
-                        <span class="result-label">Protección</span>
-                        <span class="result-value">{{ resultado_ejercicio.resultado.proteccion }} A</span>
-                    </div>
-                    {% endif %}
-                    {% if resultado_ejercicio.resultado.tubo %}
-                    <div class="result-item">
-                        <span class="result-label">Tubo</span>
-                        <span class="result-value">{{ resultado_ejercicio.resultado.tubo }} mm</span>
-                    </div>
-                    {% endif %}
-                    {% if resultado_ejercicio.resultado.intensidad %}
-                    <div class="result-item">
-                        <span class="result-label">Intensidad</span>
-                        <span class="result-value">{{ resultado_ejercicio.resultado.intensidad }} A</span>
-                    </div>
-                    {% endif %}
-                </div>
-                {% endif %}
-                
-                {% if ayuda_rag %}
-                <div style="margin-top: 20px;">
-                    <h3 style="color: #22d3ee; margin-bottom: 12px;">📚 Ayuda adicional</h3>
-                    {% for r in ayuda_rag %}
-                    <div class="search-result">
-                        <h4>{{ r.fuente }}</h4>
-                        <p>{{ r.texto[:250] }}...</p>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-        
-        <!-- PROYECTO -->
-        <div id="proyecto" class="tab-content {% if opcion == 'proyecto' %}active{% endif %}">
-            <div class="card">
-                <h2>📋 Generar Proyecto</h2>
-                
-                <div class="info-box">
-                    <h3>Generador de proyectos</h3>
-                    <p>Crea un proyecto completo basado en tus 5 proyectos reales.</p>
-                </div>
-                
-                <form method="POST" action="/generar-proyecto" target="_blank">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Tipo</label>
-                            <select name="tipo">
-                                <option value="vivienda">Vivienda</option>
-                                <option value="local">Local Comercial</option>
-                                <option value="nave">Nave Industrial</option>
-                                <option value="oficina">Oficina</option>
-                                <option value="bar">Bar/Restaurante</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Nombre</label>
-                            <input type="text" name="nombre" placeholder="Mi Proyecto">
-                        </div>
-                        <div class="form-group">
-                            <label>Dirección</label>
-                            <input type="text" name="direccion" placeholder="Calle...">
-                        </div>
-                        <div class="form-group">
-                            <label>Superficie (m²)</label>
-                            <input type="number" name="superficie" value="100">
-                        </div>
-                        <div class="form-group">
-                            <label>Potencia (W)</label>
-                            <input type="number" name="potencia" value="5000">
-                        </div>
-                    </div>
-                    <button type="submit" class="btn">📥 Generar Proyecto</button>
-                </form>
-            </div>
+        <div class="credits">
+            ⚡ REBT Calculator v2.0 | Instalaciones Eléctricas de Baja Tensión
         </div>
     </div>
     
@@ -647,21 +933,19 @@
             localStorage.setItem('rebt_tab', tabId);
         }
         
-        function preset(puntos, Tomas, cocina, extra) {
+        function setValues(puntos, Tomas, cocina) {
+            document.getElementById('puntos_luz').value = puntos;
+            document.getElementById('tomas').value = Tomas;
+            document.getElementById('cocina').checked = cocina;
             document.querySelector('input[name="puntos_luz"]').value = puntos;
             document.querySelector('input[name="tomas"]').value = Tomas;
-            if (cocina !== undefined) {
-                document.querySelector('input[name="cocina"]').checked = cocina;
-            }
-            if (extra !== undefined) {
-                document.querySelector('input[name="aire_ac"]').checked = extra;
-                document.querySelector('input[name="calefaccion"]').checked = extra;
-            }
         }
         
         // Restore tab
         const savedTab = localStorage.getItem('rebt_tab');
-        if (savedTab) showTab(savedTab);
+        if (savedTab) {
+            document.querySelector(`[onclick="showTab('${savedTab}')"]`)?.click();
+        }
     </script>
 </body>
 </html>
