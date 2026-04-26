@@ -483,13 +483,13 @@
         {% endif %}
         
         <div class="tabs">
-            <button class="tab {% if opcion == 'vivienda' %}active{% endif %}" onclick="showTab('vivienda')">🏠 Vivienda</button>
-            <button class="tab {% if opcion == 'edificio' %}active{% endif %}" onclick="showTab('edificio')">🏢 Edificio</button>
-            <button class="tab {% if opcion == 'circuito' %}active{% endif %}" onclick="showTab('circuito')">⚡ Circuito</button>
-            <button class="tab {% if opcion == 'di' %}active{% endif %}" onclick="showTab('di')">🔌 DI</button>
-            <button class="tab {% if opcion == 'resolver' %}active{% endif %}" onclick="showTab('resolver')">📝 Ejercicios</button>
-            <button class="tab {% if opcion == 'proyecto' %}active{% endif %}" onclick="showTab('proyecto')">📋 Proyecto</button>
-            <button class="tab {% if opcion == 'buscar' %}active{% endif %}" onclick="showTab('buscar')">🔍 Buscar</button>
+            <button class="tab active" onclick="showTab('vivienda', this)">🏠 Vivienda</button>
+            <button class="tab" onclick="showTab('edificio', this)">🏢 Edificio</button>
+            <button class="tab" onclick="showTab('circuito', this)">⚡ Circuito</button>
+            <button class="tab" onclick="showTab('di', this)">🔌 DI</button>
+            <button class="tab" onclick="showTab('resolver', this)">📝 Ejercicios</button>
+            <button class="tab" onclick="showTab('proyecto', this)">📋 Proyecto</button>
+            <button class="tab" onclick="showTab('buscar', this)">🔍 Buscar</button>
         </div>
         
         <!-- VIVIENDA -->
@@ -631,7 +631,7 @@
 {% endif %}
 
         <!-- EDIFICIO -->
-        <div id="edificio" class="tab-content {% if opcion == 'edificio' %}active{% endif %}">
+        <div id="edificio" class="tab-content">
             <div class="card">
                 <h2>🏢 Instalaciones de Enlace (ITC-BT-10)</h2>
                 <form method="POST" action="/calcular-edificio">
@@ -747,7 +747,7 @@
         </div>
         
         <!-- CIRCUITO -->
-        <div id="circuito" class="tab-content {% if opcion == 'circuito' %}active{% endif %}">
+        <div id="circuito" class="tab-content">
             <div class="card">
                 <h2>⚡ Cálculo de Circuito</h2>
                 <form method="POST" action="/calcular-circuito">
@@ -808,7 +808,7 @@
         </div>
         
         <!-- DI -->
-        <div id="di" class="tab-content {% if opcion == 'di' %}active{% endif %}">
+        <div id="di" class="tab-content">
             <div class="card">
                 <h2>🔌 Derivación Individual</h2>
                 <form method="POST" action="/calcular-di">
@@ -987,11 +987,11 @@
             }
         });
         
-        function showTab(tabId) {
+        function showTab(tabId, btn) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            event.target.classList.add('active');
+            btn.classList.add('active');
         }
         
         function preset(puntos, Tomas) {
