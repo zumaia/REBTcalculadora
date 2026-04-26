@@ -493,7 +493,7 @@
         </div>
         
         <!-- VIVIENDA -->
-        <div id="vivienda" class="tab-content">
+        <div id="vivienda" class="tab-content active">
             <div class="card">
                 <h2>🏠 Circuitos de Vivienda (ITC-BT-25)</h2>
                 
@@ -978,19 +978,10 @@
     </div>
     
     <script>
-        // Initialize first tab or default tab
-        document.addEventListener('DOMContentLoaded', function() {
-            var activeTab = document.querySelector('.tab-content.active');
-            if (!activeTab) {
-                document.getElementById('vivienda').classList.add('active');
-                document.querySelector('.tab').classList.add('active');
-            }
-        });
-        
         function showTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+            document.getElementById(tabId).style.display = 'block';
             btn.classList.add('active');
         }
         
