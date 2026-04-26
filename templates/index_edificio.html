@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REBT Calculator - Edificio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-primary: #0f0f23; --bg-secondary: #1a1a2e; --bg-card: #16213e; --accent: #00d4ff; --accent-hover: #00a8cc; --text-primary: #ffffff; --text-secondary: #94a3b8; --text-muted: #64748b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 8px; color: var(--accent); }
+        h1 a { color: inherit; text-decoration: none; }
+        h2 { color: var(--accent); margin-bottom: 16px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 13px; color: var(--text-secondary); }
+        input[type="number"] { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 14px; }
+        input:focus { outline: none; border-color: var(--accent); }
+        .btn { background: var(--accent); border: none; border-radius: 8px; padding: 12px 24px; color: var(--bg-primary); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; }
+        .result-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-top: 16px; }
+        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--bg-card); }
+        .result-label { color: var(--text-secondary); }
+        .result-value { font-weight: 600; }
+        .result-value.highlight { color: var(--accent); }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--bg-card); }
+        th { color: var(--text-muted); font-weight: 500; }
+        .nav { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+        .nav a { background: var(--bg-secondary); padding: 10px 16px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">REBT Calculator</a></h1>
+        <h2>🏢 Instalaciones de Enlace (ITC-BT-10)</h2>
+        
+        <form method="POST" action="/calcular-edificio">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>🏠 Viviendas básicas</label>
+                    <input type="number" name="n_viviendas_basicas" value="4" min="0">
+                </div>
+                <div class="form-group">
+                    <label>🏡 Viviendas elevadas</label>
+                    <input type="number" name="n_viviendas_elevadas" value="6" min="0">
+                </div>
+                <div class="form-group">
+                    <label>📏 Longitud LGA (m)</label>
+                    <input type="number" name="longitud_lga" value="10" min="1">
+                </div>
+                <div class="form-group">
+                    <label>📏 Longitud DI (m)</label>
+                    <input type="number" name="longitud_di" value="15" min="1">
+                </div>
+            </div>
+            <button type="submit" class="btn">⚡ Calcular</button>
+        </form>
+        
+        {% if resultado_edificio %}
+        <div class="result-box">
+            <div class="result-item">
+                <span class="result-label">Viviendas</span>
+                <span class="result-value">{{ resultado_edificio.num_viviendas }}</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Potencia total</span>
+                <span class="result-value highlight">{{ resultado_edificio.potencia_total|int }} W</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">LGA</span>
+                <span class="result-value">{{ resultado_edificio.lga.seccion }} mm²</span>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="nav">
+            <a href="/vivienda">🏠 Vivienda</a>
+            <a href="/circuito">⚡ Circuito</a>
+            <a href="/di">🔌 DI</a>
+        </div>
+    </div>
+</body>
+</html>

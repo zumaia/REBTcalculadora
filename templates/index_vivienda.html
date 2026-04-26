@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REBT Calculator - Vivienda</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --accent: #00d4ff;
+            --accent-hover: #00a8cc;
+            --accent-secondary: #7c3aed;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 8px; color: var(--accent); }
+        h1 a { color: inherit; text-decoration: none; }
+        h2 { color: var(--accent); margin-bottom: 16px; }
+        .info-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-bottom: 16px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        label { font-size: 13px; color: var(--text-secondary); }
+        input[type="number"], select { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 14px; }
+        input[type="number"]:focus { outline: none; border-color: var(--accent); }
+        .presets, .checkboxes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .preset-btn { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 8px 16px; color: var(--text-secondary); cursor: pointer; font-size: 13px; transition: all 0.2s; }
+        .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+        .checkbox-item input { width: 16px; height: 16px; }
+        .btn { background: var(--accent); border: none; border-radius: 8px; padding: 12px 24px; color: var(--bg-primary); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; }
+        .btn:hover { background: var(--accent-hover); }
+        .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--text-muted); }
+        .result-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-top: 16px; }
+        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--bg-card); }
+        .result-item:last-child { border-bottom: none; }
+        .result-label { color: var(--text-secondary); }
+        .result-value { font-weight: 600; }
+        .result-value.highlight { color: var(--accent); }
+        table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13px; }
+        th, td { text-align: left; padding: 10px; border-bottom: 1px solid var(--bg-card); }
+        th { color: var(--text-muted); font-weight: 500; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .badge-basica { background: var(--accent-secondary); }
+        .badge-elevada { background: var(--accent); color: var(--bg-primary); }
+        .nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav a { background: var(--bg-secondary); padding: 10px 16px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .nav a:hover { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><a href="/">REBT Calculator</a></h1>
+        <h2>🏠 Circuitos de Vivienda (ITC-BT-25)</h2>
+        
+        <div class="info-box">
+            <p>Cálculo automático de circuitos C1-C13 según ITC-BT-25.</p>
+        </div>
+        
+        <form method="POST" action="/calcular-vivienda">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>💡 Puntos de luz</label>
+                    <input type="number" name="puntos_luz" value="20" min="1">
+                </div>
+                <div class="form-group">
+                    <label>🔌 Tomas de corriente</label>
+                    <input type="number" name="tomas" value="25" min="1">
+                </div>
+                <div class="form-group">
+                    <label>📏 Longitud media (m)</label>
+                    <input type="number" name="longitud" value="25" min="1">
+                </div>
+            </div>
+            
+            <div class="presets">
+                <button type="button" class="preset-btn" onclick="preset(10, 15)">Basica</button>
+                <button type="button" class="preset-btn" onclick="preset(20, 20)">Estandar</button>
+                <button type="button" class="preset-btn" onclick="preset(30, 25)">Elevada</button>
+                <button type="button" class="preset-btn" onclick="preset(40, 30)">Completa</button>
+            </div>
+            
+            <div class="checkboxes">
+                <label class="checkbox-item"><input type="checkbox" name="lavadora"> Lavadora</label>
+                <label class="checkbox-item"><input type="checkbox" name="cocina"> Cocina</label>
+                <label class="checkbox-item"><input type="checkbox" name="aire_ac"> A/A</label>
+                <label class="checkbox-item"><input type="checkbox" name="secadora"> Secadora</label>
+                <label class="checkbox-item"><input type="checkbox" name="calefaccion"> Calefacción</label>
+                <label class="checkbox-item"><input type="checkbox" name="domotica"> Domótica</label>
+                <label class="checkbox-item"><input type="checkbox" name="recarga_ve"> Recarga VE</label>
+            </div>
+            
+            <button type="submit" class="btn">⚡ Calcular Instalación</button>
+        </form>
+        
+        {% if resultado_vivienda %}
+        <div class="result-box">
+            <div class="result-item">
+                <span class="result-label">Electrificación</span>
+                <span class="result-value">{{ resultado_vivienda.electrificacion.upper() }}</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Potencia total</span>
+                <span class="result-value highlight">{{ resultado_vivienda.potencia_total }} W</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">IGA</span>
+                <span class="result-value">{{ resultado_vivienda.iga }} A</span>
+            </div>
+        </div>
+        
+        <table>
+            <thead><tr><th>Circ.</th><th>Descripción</th><th>P(W)</th><th>I(A)</th><th>Secci��n</th><th>PIA</th><th>Tubo</th></tr></thead>
+            <tbody>
+            {% for c in resultado_vivienda.circuitos %}
+            <tr><td>{{ c.codigo }}</td><td>{{ c.nombre }}</td><td>{{ c.potencia }}</td><td>{{ c.intensidad }}</td><td>{{ c.seccion }} mm²</td><td>{{ c.pia }}A</td><td>{{ c.tubo }}mm</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        
+        {% if resultado_vivienda.derivacion_individual %}
+        <div class="result-box">
+            <div class="result-item">
+                <span class="result-label">Sección DI</span>
+                <span class="result-value highlight">{{ resultado_vivienda.derivacion_individual.seccion }} mm²</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Tubo DI</span>
+                <span class="result-value">{{ resultado_vivienda.derivacion_individual.tubo }} mm</span>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+        
+        <div class="nav">
+            <a href="/edificio">🏢 Edificio</a>
+            <a href="/circuito">⚡ Circuito</a>
+            <a href="/di">🔌 DI</a>
+        </div>
+    </div>
+    
+    <script>
+        function preset(puntos, Tomas) {
+            document.querySelector('input[name="puntos_luz"]').value = puntos;
+            document.querySelector('input[name="tomas"]').value = Tomas;
+        }
+    </script>
+</body>
+</html>

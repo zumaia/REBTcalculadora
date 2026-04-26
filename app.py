@@ -97,7 +97,27 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return redirect('/vivienda')
+
+
+@app.route('/vivienda')
+def vivienda():
+    return render_template('index_vivienda.html')
+
+
+@app.route('/edificio')
+def edificio():
+    return render_template('index_edificio.html')
+
+
+@app.route('/circuito')
+def circuito():
+    return render_template('index_circuito.html')
+
+
+@app.route('/di')
+def di():
+    return render_template('index_di.html')
 
 
 @app.route('/calcular-vivienda', methods=['POST'])
