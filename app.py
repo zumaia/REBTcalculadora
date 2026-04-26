@@ -131,7 +131,7 @@ def proyecto():
 
 
 @app.route('/buscar')
-def buscar():
+def buscar_page():
     return render_template('index_buscar.html')
 
 
