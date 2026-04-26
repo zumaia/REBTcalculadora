@@ -42,11 +42,26 @@
         .scheme svg { max-width: 100%; height: auto; }
         .nav { display: flex; justify-content: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
         .nav a { background: var(--bg-secondary); padding: 10px 16px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; }
+        .header-nav { display: flex; justify-content: center; gap: 4px; margin: 16px 0; flex-wrap: wrap; }
+        .header-nav a { background: var(--bg-secondary); padding: 8px 12px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 13px; }
+        .header-nav a:hover { color: var(--accent); }
+        .header-nav a.active { background: var(--accent); color: var(--bg-primary); }
     </style>
 </head>
 <body>
     <div class="container">
         <h1><a href="/">REBT Calculator</a></h1>
+        
+        <nav class="header-nav">
+            <a href="/vivienda" class="active">🏠</a>
+            <a href="/edificio">🏢</a>
+            <a href="/circuito">⚡</a>
+            <a href="/di">🔌</a>
+            <a href="/ejercicios">📝</a>
+            <a href="/proyecto">📋</a>
+            <a href="/buscar">🔍</a>
+        </nav>
+        
         <h2>🏠 Circuitos de Vivienda (ITC-BT-25)</h2>
         
         <div class="info-box">
