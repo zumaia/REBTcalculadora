@@ -517,11 +517,11 @@
                     </div>
                 </div>
                 
-                <div class="presets">
-                    <button type="button" class="preset-btn" onclick="setValues(10, 15, false)">Basica</button>
-                    <button type="button" class="preset-btn" onclick="setValues(20, 20, false)">Estándar</button>
-                    <button type="button" class="preset-btn" onclick="setValues(30, 25, true)">Elevada</button>
-                    <button type="button" class="preset-btn" onclick="setValues(40, 30, true)">Completa</button>
+<div class="presets">
+                    <button type="button" class="preset-btn" onclick="preset(10, 15)">Basica</button>
+                    <button type="button" class="preset-btn" onclick="preset(20, 20)">Estandar</button>
+                    <button type="button" class="preset-btn" onclick="preset(30, 25)">Elevada</button>
+                    <button type="button" class="preset-btn" onclick="preset(40, 30)">Completa</button>
                 </div>
                 
                 <div class="form-group" style="margin-top: 16px;">
@@ -936,12 +936,13 @@
             localStorage.setItem('rebt_tab', tabId);
         }
         
-        function setValues(puntos, Tomas, cocina) {
-            document.getElementById('puntos_luz').value = puntos;
-            document.getElementById('tomas').value = Tomas;
-            document.getElementById('cocina').checked = cocina;
+        function preset(puntos, Tomas) {
+            // Update visible inputs
             document.querySelector('input[name="puntos_luz"]').value = puntos;
             document.querySelector('input[name="tomas"]').value = Tomas;
+            // Update hidden inputs for form
+            document.getElementById('puntos_luz').value = puntos;
+            document.getElementById('tomas').value = Tomas;
         }
         
         // Restore tab
