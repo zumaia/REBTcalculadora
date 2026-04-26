@@ -711,6 +711,18 @@
                         <span class="result-label">Potencia total</span>
                         <span class="result-value highlight">{{ resultado_edificio.potencia_total|int }} W</span>
                     </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia viviendas</span>
+                        <span class="result-value">{{ resultado_edificio.potencia_viviendas|int }} W</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia servicios</span>
+                        <span class="result-value">{{ resultado_edificio.potencia_servicios|int }} W</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Potencia local</span>
+                        <span class="result-value">{{ resultado_edificio.potencia_local|int }} W</span>
+                    </div>
                 </div>
                 <div class="result-box">
                     <h3>⚡ LGA</h3>
@@ -719,9 +731,35 @@
                         <span class="result-value">{{ resultado_edificio.lga.seccion }} mm²</span>
                     </div>
                     <div class="result-item">
+                        <span class="result-label">Tubo</span>
+                        <span class="result-value">{{ resultado_edificio.lga.tubo }} mm</span>
+                    </div>
+                    <div class="result-item">
                         <span class="result-label">Fusible CGP</span>
                         <span class="result-value">{{ resultado_edificio.lga.fusible }} A</span>
                     </div>
+                    <div class="result-item">
+                        <span class="result-label">Intensidad</span>
+                        <span class="result-value">{{ resultado_edificio.lga.intensidad }} A</span>
+                    </div>
+                </div>
+                
+                <div class="result-box">
+                    <h3>🔌 Derivaciones Individuales</h3>
+                    <table>
+                        <thead><tr><th>Viv.</th><th>Tipo</th><th>P(W)</th><th>Sección</th><th>Tubo</th></tr></thead>
+                        <tbody>
+                        {% for di in resultado_edificio.derivaciones_individuales[:10] %}
+                        <tr>
+                            <td>{{ di.vivienda }}</td>
+                            <td>{{ di.tipo }}</td>
+                            <td>{{ di.potencia }}</td>
+                            <td>{{ di.seccion }} mm²</td>
+                            <td>{{ di.tubo }}mm</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
                 {% endif %}
             </div>
