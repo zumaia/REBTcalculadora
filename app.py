@@ -200,7 +200,7 @@ def calcular_circuito():
                              'seccion': seccion_final,
                              'pia': pia,
                              'tubo': tubo,
-                             'cdt_max': cdt
+                             'cdt_max': cdt_max
                          })
     except Exception as e:
         return render_template('index.html', error=str(e))
@@ -212,10 +212,16 @@ def calcular_di():
     try:
         potencia = float(request.form.get('potencia', 5000))
         longitud = float(request.form.get('longitud', 15))
-        tension = float(request.form.get('tension', 230))
         es_trifasica = request.form.get('es_trifasica') == 'on'
         
-        intensidad = calcular_intensidad(potencia, tension)
+        # Tensión: 400V si trifásica, 230V si no
+        tension = 400 if es_trifasica else 230
+        
+        if es_trifasica:
+            intensidad = calcular_intensidad_trifasica(potencia, tension)
+        else:
+            intensidad = calcular_intensidad(potencia, tension)
+        
         seccion_cdt = calcular_seccion_cdt(potencia, longitud, 1, tension)
         aislamiento = "3xPVC" if es_trifasica else "2xPVC"
         seccion, iz = calcular_seccion_por_intensidad(intensidad, "B1", aislamiento)
@@ -228,6 +234,7 @@ def calcular_di():
                          opcion='di',
                          resultado_di={
                              'potencia': potencia,
+                             'tension': tension,
                              'intensidad': round(intensidad, 2),
                              'seccion_cdt': round(seccion_cdt, 2),
                              'seccion': seccion_final,
