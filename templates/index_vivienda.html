@@ -6,20 +6,7 @@
     <title>REBT Calculator - Vivienda</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-primary: #0f0f23;
-            --bg-secondary: #1a1a2e;
-            --bg-card: #16213e;
-            --accent: #00d4ff;
-            --accent-hover: #00a8cc;
-            --accent-secondary: #7c3aed;
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-        }
+        :root { --bg-primary: #0f0f23; --bg-secondary: #1a1a2e; --bg-card: #16213e; --accent: #00d4ff; --accent-hover: #00a8cc; --accent-secondary: #7c3aed; --text-primary: #ffffff; --text-secondary: #94a3b8; --text-muted: #64748b; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
         .container { max-width: 900px; margin: 0 auto; padding: 20px; }
@@ -30,15 +17,13 @@
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 16px; }
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         label { font-size: 13px; color: var(--text-secondary); }
-        input[type="number"], select { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 14px; }
-        input[type="number"]:focus { outline: none; border-color: var(--accent); }
+        input[type="number"] { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 10px; color: var(--text-primary); font-size: 14px; }
+        input:focus { outline: none; border-color: var(--accent); }
         .presets, .checkboxes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-        .preset-btn { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 8px 16px; color: var(--text-secondary); cursor: pointer; font-size: 13px; transition: all 0.2s; }
+        .preset-btn { background: var(--bg-secondary); border: 1px solid var(--text-muted); border-radius: 8px; padding: 8px 16px; color: var(--text-secondary); cursor: pointer; font-size: 13px; }
         .preset-btn:hover { border-color: var(--accent); color: var(--accent); }
         .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
-        .checkbox-item input { width: 16px; height: 16px; }
-        .btn { background: var(--accent); border: none; border-radius: 8px; padding: 12px 24px; color: var(--bg-primary); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; }
-        .btn:hover { background: var(--accent-hover); }
+        .btn { background: var(--accent); border: none; border-radius: 8px; padding: 12px 24px; color: var(--bg-primary); font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; }
         .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--text-muted); }
         .result-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-top: 16px; }
         .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--bg-card); }
@@ -52,9 +37,11 @@
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
         .badge-basica { background: var(--accent-secondary); }
         .badge-elevada { background: var(--accent); color: var(--bg-primary); }
-        .nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-        .nav a { background: var(--bg-secondary); padding: 10px 16px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 14px; }
-        .nav a:hover { color: var(--accent); }
+        .buttons { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+        .schemes { background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-top: 16px; overflow-x: auto; }
+        .scheme svg { max-width: 100%; height: auto; }
+        .nav { display: flex; justify-content: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+        .nav a { background: var(--bg-secondary); padding: 10px 16px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; }
     </style>
 </head>
 <body>
@@ -119,7 +106,7 @@
         </div>
         
         <table>
-            <thead><tr><th>Circ.</th><th>Descripción</th><th>P(W)</th><th>I(A)</th><th>Secci��n</th><th>PIA</th><th>Tubo</th></tr></thead>
+            <thead><tr><th>Circ.</th><th>Descripción</th><th>P(W)</th><th>I(A)</th><th>Sección</th><th>PIA</th><th>Tubo</th></tr></thead>
             <tbody>
             {% for c in resultado_vivienda.circuitos %}
             <tr><td>{{ c.codigo }}</td><td>{{ c.nombre }}</td><td>{{ c.potencia }}</td><td>{{ c.intensidad }}</td><td>{{ c.seccion }} mm²</td><td>{{ c.pia }}A</td><td>{{ c.tubo }}mm</td></tr>
@@ -139,12 +126,34 @@
             </div>
         </div>
         {% endif %}
+        
+        <div class="buttons">
+            <form method="POST" action="/download/mem" target="_blank">
+                <input type="hidden" name="tipo" value="vivienda">
+                <input type="hidden" name="puntos_luz" value="20">
+                <button type="submit" class="btn btn-secondary">📥 MEM</button>
+            </form>
+            <form method="POST" action="/download/svg" target="_blank">
+                <input type="hidden" name="tipo" value="vivienda">
+                <input type="hidden" name="puntos_luz" value="20">
+                <button type="submit" class="btn btn-secondary">🎨 SVG</button>
+            </form>
+        </div>
+        
+        {% if esquema %}
+        <div class="schemes">
+            <div class="scheme">{{ esquema }}</div>
+        </div>
+        {% endif %}
         {% endif %}
         
         <div class="nav">
             <a href="/edificio">🏢 Edificio</a>
             <a href="/circuito">⚡ Circuito</a>
             <a href="/di">🔌 DI</a>
+            <a href="/ejercicios">📝 Ejercicios</a>
+            <a href="/proyecto">📋 Proyecto</a>
+            <a href="/buscar">🔍 Buscar</a>
         </div>
     </div>
     
