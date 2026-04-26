@@ -473,7 +473,7 @@
 </head>
 <body>
     <div class="container">
-        <header>
+<header>
             <h1><a href="/" style="color: inherit; text-decoration: none;">REBT Calculator</a></h1>
             <p style="font-size: 12px; color: var(--text-muted); margin: 4px 0 0;">ITC-BT-25 Viviendas | ITC-BT-10 Edificios | ITC-BT-19 Sección cables</p>
         </header>
@@ -606,18 +606,30 @@
                     </div>
                 </div>
                 {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-                {% endif %}
+                
+                <div style="margin-top: 16px;">
+                <form method="POST" action="/download/mem" target="_blank" style="display: inline; margin-right: 8px;">
+                    <input type="hidden" name="tipo" value="vivienda">
+                    <input type="hidden" name="puntos_luz" value="20">
+                    <button type="submit" class="btn btn-secondary" style="width: auto; padding: 10px 16px;">📥 MEM</button>
+                </form>
+                
+                <form method="POST" action="/download/svg" target="_blank" style="display: inline;">
+                    <input type="hidden" name="tipo" value="vivienda">
+                    <input type="hidden" name="puntos_luz" value="20">
+                    <button type="submit" class="btn btn-secondary" style="width: auto; padding: 10px 16px;">🎨 SVG</button>
+                </form>
+                </div>
                 
                 {% if esquema and opcion == 'vivienda' %}
                 <div class="scheme">{{ esquema }}</div>
                 {% endif %}
             </div>
         </div>
-        
+    </div>
+</div>
+{% endif %}
+
         <!-- EDIFICIO -->
         <div id="edificio" class="tab-content {% if opcion == 'edificio' %}active{% endif %}">
             <div class="card">
