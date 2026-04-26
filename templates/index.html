@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ REBT Calculator - Instalaciones Eléctricas</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>REBT Calculator - Instalaciones Eléctricas</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -52,16 +50,9 @@
         }
         
         header::before {
-            content: '⚡';
-            font-size: 60px;
-            display: block;
-            margin-bottom: 10px;
-            animation: pulse 2s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.05); }
+            content: '';
+            font-size: 0;
+            display: none;
         }
         
         h1 {
@@ -612,6 +603,18 @@
                         <span class="result-label">Potencia</span>
                         <span class="result-value">{{ resultado_vivienda.derivacion_individual.potencia }} W</span>
                     </div>
+                    
+                    <form method="POST" action="/download/mem" target="_blank" style="display: inline; margin-right: 8px;">
+                        <input type="hidden" name="tipo" value="vivienda">
+                        <input type="hidden" name="puntos_luz" value="20">
+                        <button type="submit" class="btn btn-secondary" style="width: auto; padding: 10px 16px;">📥 MEM</button>
+                    </form>
+                    
+                    <form method="POST" action="/download/svg" target="_blank" style="display: inline;">
+                        <input type="hidden" name="tipo" value="vivienda">
+                        <input type="hidden" name="puntos_luz" value="20">
+                        <button type="submit" class="btn btn-secondary" style="width: auto; padding: 10px 16px;">🎨 SVG</button>
+                    </form>
                 </div>
                 
                 {% if esquema %}
