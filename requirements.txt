@@ -1,4 +1,5 @@
-# REBT Calculator - Dependencies
+# REBT Calculator - Production (Vercel)
+# Sin RAG - Solo cálculos básicos
 flask>=3.0.0
 gunicorn>=21.0.0
 werkzeug>=3.0.0
@@ -7,8 +8,3 @@ markupsafe>=2.1.0
 click>=8.1.0
 blinker>=1.7.0
 itsdangerous>=2.1.0
-
-# RAG
-pypdf>=4.0.0
-chromadb>=0.4.0
-sentence-transformers>=3.0.0

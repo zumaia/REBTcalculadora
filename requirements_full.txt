@@ -1,0 +1,18 @@
+# REBT Calculator - All Dependencies (Local)
+flask>=3.0.0
+gunicorn>=21.0.0
+werkzeug>=3.0.0
+jinja2>=3.1.0
+markupsafe>=2.1.0
+click>=8.1.0
+blinker>=1.7.0
+itsdangerous>=2.1.0
+
+# RAG
+pypdf>=4.0.0
+chromadb>=0.4.0
+sentence-transformers>=3.0.0
+torch>=2.0.0
+transformers>=4.0.0
+scikit-learn>=1.0.0
+scipy>=1.0.0
