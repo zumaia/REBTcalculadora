@@ -12,7 +12,7 @@ ENV/
 
 # Flask
 instance/
-.webassets-cache
+.webassets-cache/
 
 # IDE
 .vscode/
@@ -45,3 +45,7 @@ build/
 
 # Ignore the venv folder specifically
 /venv/
+
+# RAG - Base de datos vectorial (se regenera con index_rag.py)
+data/
+*.sqlite3
