@@ -22,6 +22,7 @@ from engine_rebt import (
     coef_simultaneidad,
     prevision_carga_viviendas,
     calcular_intensidad,
+    calcular_intensidad_trifasica,
     calcular_seccion_cdt,
     calcular_seccion_por_intensidad,
     calcular_pia,
