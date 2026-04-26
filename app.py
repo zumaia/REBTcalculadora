@@ -166,12 +166,11 @@ def calcular_vivienda():
         # Generar esquema unifilar
         esquema = generar_esquema_vivienda(datos)
         
-        return render_template('index.html', 
-                         opcion='vivienda',
+        return render_template('index_vivienda.html', 
                          resultado_vivienda=datos,
                          esquema=esquema)
     except Exception as e:
-        return render_template('index.html', error=str(e))
+        return render_template('index_vivienda.html', error=str(e))
 
 
 @app.route('/calcular-edificio', methods=['POST'])
@@ -200,11 +199,10 @@ def calcular_edificio_route():
             es_trifasica=es_trifasica
         )
         
-        return render_template('index.html',
-                         opcion='edificio',
+        return render_template('index_edificio.html',
                          resultado_edificio=datos)
     except Exception as e:
-        return render_template('index.html', error=str(e))
+        return render_template('index_edificio.html', error=str(e))
 
 
 @app.route('/calcular-circuito', methods=['POST'])
@@ -227,8 +225,7 @@ def calcular_circuito():
         pia = calcular_pia(intensidad)
         tubo = calcular_tubo(seccion_final)
         
-        return render_template('index.html',
-                         opcion='circuito',
+        return render_template('index_circuito.html',
                          resultado_circuito={
                              'potencia': potencia,
                              'intensidad': round(intensidad, 2),
@@ -236,10 +233,10 @@ def calcular_circuito():
                              'seccion': seccion_final,
                              'pia': pia,
                              'tubo': tubo,
-                             'cdt_max': cdt_max
-                         })
+'cdt_max': cdt_max
+                          })
     except Exception as e:
-        return render_template('index.html', error=str(e))
+        return render_template('index_circuito.html', error=str(e))
 
 
 @app.route('/calcular-di', methods=['POST'])
@@ -266,8 +263,7 @@ def calcular_di():
         n_cond = 5 if es_trifasica else 3
         tubo = calcular_tubo(seccion_final, n_cond)
         
-        return render_template('index.html',
-                         opcion='di',
+        return render_template('index_di.html',
                          resultado_di={
                              'potencia': potencia,
                              'tension': tension,
@@ -276,10 +272,10 @@ def calcular_di():
                              'seccion': seccion_final,
                              'iga': iga,
                              'tubo': tubo,
-                             'n_conductores': n_cond
-                         })
+'n_conductores': n_cond
+                          })
     except Exception as e:
-        return render_template('index.html', error=str(e))
+        return render_template('index_di.html', error=str(e))
 
 
 @app.route('/api/calcular', methods=['POST'])
@@ -338,7 +334,7 @@ def buscar():
         tipo = request.form.get('tipo', 'todos')
         
         if not RAG_AVAILABLE:
-            return render_template('index.html', error='RAG no disponible')
+            return render_template('index_buscar.html', error='RAG no disponible')
         
         search = REBT_Search()
         
@@ -351,12 +347,11 @@ def buscar():
         else:
             results = search.buscar(query)
         
-        return render_template('index.html',
-                           opcion='buscar',
+        return render_template('index_buscar.html',
                            query=query,
-                           resultados_busqueda=results)
+                           resultados=results)
     except Exception as e:
-        return render_template('index.html', error=str(e))
+        return render_template('index_buscar.html', error=str(e))
 
 
 @app.route('/ver-resultados', methods=['POST'])
@@ -407,7 +402,7 @@ def resolver():
         ayuda = request.form.get('ayuda', 'no') == 'si'
         
         if not RESOLUTOR_AVAILABLE:
-            return render_template('index.html', error='Resolutor no disponible')
+            return render_template('index_ejercicios.html', error='Resolutor no disponible')
         
         resultado = resolver_ejercicio(pregunta)
         
@@ -416,13 +411,12 @@ def resolver():
             search = REBT_Search()
             ayuda_rag = search.buscar_ejercicios(pregunta)[:3]
         
-        return render_template('index.html',
-                           opcion='resolver',
+        return render_template('index_ejercicios.html',
                            pregunta=pregunta,
-                           resultado_ejercicio=resultado,
+                           resultado=resultado,
                            ayuda_rag=ayuda_rag)
     except Exception as e:
-        return render_template('index.html', error=str(e))
+        return render_template('index_ejercicios.html', error=str(e))
 
 
 @app.route('/download/mem', methods=['POST'])
