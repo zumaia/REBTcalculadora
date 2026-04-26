@@ -6,7 +6,7 @@ Calculadora REBT - Aplicación Flask
  UF0888: Pública Concurrencia
 """
 
-from flask import Flask, render_template, request, jsonify, Response, stream_with_context
+from flask import Flask, render_template, request, jsonify, Response, stream_with_context, redirect
 from datetime import datetime
 import sys
 import os
