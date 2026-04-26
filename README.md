@@ -15,11 +15,25 @@ Aplicación web para cálculos de instalaciones eléctricas según el Reglamento
 
 - ✅ Cálculo automático de circuitos según ITC-BT-25
 - ✅ Electrificación básica/elevada
-- ✅ Sección de cables por intensité y caída de tensión
+- ✅ Sección de cables por intensidad y caída de tensión
 - ✅ Selección de protecciones (PIA, IGA, fusibles)
 - ✅ Dimensionado de tubos
-- ✅ Esquema unifilar ASCII
+- ✅ Esquema unifilar SVG
 - ✅ Cálculo de edificios completos
+- ✅ 7 páginas independientes con header de navegación
+
+## 🌐 Estructura (7 páginas)
+
+```
+/                    → Menú principal
+/vivienda           → Circuitos C1-C13 (ITC-BT-25)
+/edificio           → Instalaciones enlace (ITC-BT-10)
+/circuito           → Cálculo genérico circuito
+/di                 → Derivación individual
+/ejercicios          → Resolución ejercicios IA
+/proyecto           → Generador proyectos
+/buscar             → Búsqueda normativa REBT
+```
 
 ## 🚀 Despliegue
 
@@ -32,28 +46,12 @@ python app.py
 gunicorn app:app --bind 0.0.0.0:$PORT
 ```
 
-## 📁 Estructura
-
-```
-REBT_Project/
-├── app.py              # Aplicación Flask
-├── src/
-│   ├── engine_rebt.py  # Motor de cálculo
-│   ├── modules/       # Módulos UF
-│   └── schemes.py     # Generación esquemas
-├── templates/
-│   └── index.html    # Interfaz web
-├── ejercicios/       # Ejercicios prácticos
-├── esquemas/        # Esquemas generados
-└── normativa/       # PDFs ITC-BT
-```
-
 ## 📖 Uso
 
-1. Abre `http://localhost:5000`
-2. Selecciona el tipo de cálculo
-3. Introduce los datos
-4. Obtén resultados y esquema
+1. Abre la página (localhost o desplegada)
+2. Usa el header de navegación para seleccionar opción
+3. Rellena el formulario
+4. Obtén resultados, esquema y opciones de descarga
 
 ## 🛠️ Tecnologías
 
