@@ -603,48 +603,16 @@
                         <span class="result-label">Potencia</span>
                         <span class="result-value">{{ resultado_vivienda.derivacion_individual.potencia }} W</span>
                     </div>
-</div>
+                </div>
                 {% endif %}
             </div>
         </div>
-                    <div class="result-item">
-                        <span class="result-label">Sección</span>
-                        <span class="result-value highlight">{{ resultado_di.seccion }} mm²</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">IGA</span>
-                        <span class="result-value">{{ resultado_di.iga }} A</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Tubo</span>
-                        <span class="result-value">{{ resultado_di.tubo }} mm</span>
-                    </div>
-                </div>
-                    <div class="result-item">
-                        <span class="result-label">Tubo</span>
-                        <span class="result-value">{{ resultado_vivienda.derivacion_individual.tubo }} mm</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label">Potencia</span>
-                        <span class="result-value">{{ resultado_vivienda.derivacion_individual.potencia }} W</span>
-                    </div>
-                    
-                    <form method="POST" action="/download/mem" target="_blank" style="display: inline; margin-right: 8px;">
-                        <input type="hidden" name="tipo" value="vivienda">
-                        <input type="hidden" name="puntos_luz" value="20">
-                        <button type="submit" class="btn btn-secondary" style="width: auto; padding: 10px 16px;">📥 MEM</button>
-                    </form>
-                    
-                    <form method="POST" action="/download/svg" target="_blank" style="display: inline;">
-                        <input type="hidden" name="tipo" value="vivienda">
-                        <input type="hidden" name="puntos_luz" value="20">
-                        <button type="submit" class="btn btn-secondary" style="width: auto; padding: 10px 16px;">🎨 SVG</button>
-                    </form>
-                </div>
+    </div>
+</div>
+                {% endif %}
                 
                 {% if esquema %}
                 <div class="scheme">{{ esquema }}</div>
-                {% endif %}
                 {% endif %}
             </div>
         </div>
