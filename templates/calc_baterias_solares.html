@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baterías Solares - REBT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-primary: #0f0f23; --bg-secondary: #1a1a2e; --bg-card: #16213e; --accent: #00d4ff; --text-primary: #ffffff; --text-secondary: #94a3b8; --text-muted: #64748b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 8px; color: var(--accent); }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--bg-secondary); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-family: 'Inter', sans-serif; }
+        button { background: var(--accent); color: var(--bg-primary); padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Inter', sans-serif; font-size: 14px; width: 100%; }
+        button:hover { opacity: 0.9; }
+        .resultados { margin-top: 30px; padding: 20px; background: var(--bg-card); border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.1); }
+        .resultado-item { margin: 10px 0; padding: 12px; background: var(--bg-secondary); border-radius: 8px; border-left: 4px solid var(--accent); }
+        .error { color: #ff6b6b; padding: 10px; background: rgba(255, 107, 107, 0.1); border-radius: 6px; }
+        .nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav a { background: var(--bg-secondary); padding: 8px 12px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 13px; transition: all 0.2s; }
+        .nav a:hover { color: var(--accent); border-color: var(--accent); }
+        .nav a.active { background: var(--accent); color: var(--bg-primary); }
+        .info-box { background: var(--bg-card); padding: 16px; border-radius: 8px; margin-bottom: 24px; border: 1px solid rgba(0, 212, 255, 0.1); color: var(--text-secondary); font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; margin-bottom: 8px; color: var(--accent);"><a href="/" style="color: inherit; text-decoration: none;">REBT Calculator</a></h1>
+        <div class="info-box">Cálculo de banco de baterías para sistemas solares. Determina capacidad en Ah según autonomía y consumo.</div>
+        <form method="POST" style="background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.1);">
+            <div class="form-group">
+                <label>Consumo diario (kWh/día)</label>
+                <input type="number" name="consumo_diario" value="10" min="0.1" step="0.5" required>
+            </div>
+            <div class="form-group">
+                <label>Tensión del sistema (V)</label>
+                <select name="tension">
+                    <option value="12">12V</option>
+                    <option value="24" selected>24V</option>
+                    <option value="48">48V</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Días de autonomía</label>
+                <input type="number" name="dias" value="1" min="0.5" step="0.5" required>
+            </div>
+            <div class="form-group">
+                <label>Profundidad de descarga (%)</label>
+                <input type="number" name="profundidad" value="50" min="20" max="80" step="5">
+            </div>
+            <button type="submit" style="width: 100%;">Calcular</button>
+        </form>
+        {% if resultado %}
+            <div class="resultados">
+                {% if resultado.error %}
+                    <div class="error">{{ resultado.error }}</div>
+                {% else %}
+                    <div class="resultado-item"><strong>Energía diaria:</strong> {{ resultado.energia_diaria_wh }} Wh</div>
+                    <div class="resultado-item"><strong>Capacidad requerida:</strong> {{ resultado.capacidad_requerida_ah }} Ah</div>
+                    <div class="resultado-item"><strong>Configuración:</strong> {{ resultado.configuracion }}</div>
+                    <div class="resultado-item"><strong>Total baterías:</strong> {{ resultado.num_baterias_total }}</div>
+                    <div class="resultado-item"><strong>Capacidad instalada:</strong> {{ resultado.capacidad_instalada_ah }} Ah</div>
+                {% endif %}
+            </div>
+        {% endif %}
+        <div class="nav">
+            <a href="/vivienda">vivienda</a>
+            <a href="/edificio">edificio</a>
+            <a href="/circuito">circuito</a>
+            <a href="/di">di</a>
+            <a href="/calc_seccion">calc_seccion</a>
+            <a href="/calc_caida">calc_caida</a>
+            <a href="/calc_proteccion">calc_proteccion</a>
+            <a href="/calc_solar">calc_solar</a>
+            <a href="/calc_baterias_solares" class="active">calc_baterias_solares</a>
+            <a href="/calc_consumo_diario">calc_consumo_diario</a>
+            <a href="/calc_divisor">calc_divisor</a>
+            <a href="/calc_fp">calc_fp</a>
+            <a href="/calc_rparalelo">calc_rparalelo</a>
+            <a href="/calc_costo">calc_costo</a>
+            <a href="/calc_icc_simplificado">calc_icc_simplificado</a>
+            <a href="/calc_icc_impedancias">calc_icc_impedancias</a>
+            <a href="/calc_tierra">calc_tierra</a>
+            <a href="/calc_longitud_max">calc_longitud_max</a>
+            <a href="/calc_picas">calc_picas</a>
+            <a href="/calc_potencia_elec">calc_potencia_elec</a>
+            <a href="/calc_rconductor">calc_rconductor</a>
+            <a href="/calc_seccion_pot_dist">calc_seccion_pot_dist</a>
+            <a href="/calc_seccion_caida_dist">calc_seccion_caida_dist</a>
+            <a href="/calc_ohm">calc_ohm</a>
+            <a href="/calc_codigo_colores">calc_codigo_colores</a>
+            <a href="/ejercicios">ejercicios</a>
+            <a href="/proyecto">proyecto</a>
+            <a href="/buscar">buscar</a>
+        </div>
+    </div>
+</body>
+</html>

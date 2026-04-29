@@ -13,6 +13,7 @@
         h1 { text-align: center; margin-bottom: 8px; color: var(--accent); }
         h1 a { color: inherit; text-decoration: none; }
         h2 { color: var(--accent); margin-bottom: 16px; }
+        .info-box { background: var(--bg-secondary); padding: 16px; border-radius: 12px; margin-bottom: 16px; }
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 16px; }
         .form-group { display: flex; flex-direction: column; gap: 6px; }
         label { font-size: 13px; color: var(--text-secondary); }
@@ -23,27 +24,20 @@
         .result-item { display: flex; justify-content: space-between; padding: 8px 0; }
         .result-label { color: var(--text-secondary); }
         .result-value.highlight { color: var(--accent); font-weight: 600; }
-        .nav { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+        .nav { display: flex; justify-content: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
         .nav a { background: var(--bg-secondary); padding: 10px 16px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; }
-        .header-nav { display: flex; justify-content: center; gap: 4px; margin: 16px 0; flex-wrap: wrap; }
-        .header-nav a { background: var(--bg-secondary); padding: 8px 12px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 13px; }
-        .header-nav a:hover { color: var(--accent); }
-        .header-nav a.active { background: var(--accent); color: var(--bg-primary); }
+
     </style>
 </head>
 <body>
     <div class="container">
         <h1><a href="/">REBT Calculator</a></h1>
-        <nav class="header-nav">
-<a href="/vivienda">🏠</a>
-<a href="/edificio">🏢</a>
-<a href="/circuito" class="active">⚡</a>
-<a href="/di">🔌</a>
-<a href="/ejercicios">📝</a>
-<a href="/proyecto">📋</a>
-<a href="/buscar">🔍</a>
-</nav>
+
         <h2>⚡ Cálculo de Circuito</h2>
+        
+        <div class="info-box">
+            <p>Cálculo de intensidad, sección de conductor y protección (PIA) para un circuito eléctrico según REBT.</p>
+        </div>
         
         <form method="POST" action="/calcular-circuito">
             <div class="form-grid">
@@ -93,12 +87,34 @@
         {% endif %}
         
         <div class="nav">
-            <a href="/vivienda">🏠 Vivienda</a>
-            <a href="/edificio">🏢 Edificio</a>
-            <a href="/di">🔌 DI</a>
-            <a href="/ejercicios">📝 Ejercicios</a>
-            <a href="/proyecto">📋 Proyecto</a>
-            <a href="/buscar">🔍 Buscar</a>
+            <a href="/vivienda" title="Circuitos de Vivienda (ITC-BT-25)">🏠</a>
+            <a href="/edificio" title="Edificio Residencial">🏢</a>
+            <a href="/circuito" class="active" title="Cálculo de Circuito">⚡</a>
+            <a href="/di" title="Derivación Individual">🔌</a>
+            <a href="/calc_seccion" title="Sección de Cable">📏</a>
+            <a href="/calc_caida" title="Caída de Tensión">📉</a>
+            <a href="/calc_proteccion" title="Protecciones">🛡️</a>
+            <a href="/calc_solar" title="Paneles Solares">☀️</a>
+            <a href="/calc_baterias_solares" title="Baterías Solares">🔋</a>
+            <a href="/calc_consumo_diario" title="Consumo Diario">⚡</a>
+            <a href="/calc_divisor" title="Divisor de Tensión">🔗</a>
+            <a href="/calc_fp" title="Factor de Potencia">📊</a>
+            <a href="/calc_rparalelo" title="Resistencias en Paralelo">🔀</a>
+            <a href="/calc_costo" title="Coste de Instalación">💰</a>
+            <a href="/calc_icc_simplificado" title="Cortocircuito Simplificado">⚡</a>
+            <a href="/calc_icc_impedancias" title="Cortocircuito por Impedancias">⚡</a>
+            <a href="/calc_tierra" title="Toma de Tierra">🌍</a>
+            <a href="/calc_longitud_max" title="Longitud Máxima">📏</a>
+            <a href="/calc_picas" title="Número de Picas">🌍</a>
+            <a href="/calc_potencia_elec" title="Potencia Eléctrica">⚡</a>
+            <a href="/calc_rconductor" title="Resistencia de Conductor">🔧</a>
+            <a href="/calc_seccion_pot_dist" title="Sección por Potencia">📏</a>
+            <a href="/calc_seccion_caida_dist" title="Sección por Caída">📏</a>
+            <a href="/calc_ohm" title="Ley de Ohm">⚡</a>
+            <a href="/calc_codigo_colores" title="Código de Colores">🎨</a>
+            <a href="/ejercicios" title="Ejercicios">📝</a>
+            <a href="/proyecto" title="Proyecto Eléctrico">📋</a>
+            <a href="/buscar" title="Buscar en REBT">🔍</a>
         </div>
     </div>
 </body>

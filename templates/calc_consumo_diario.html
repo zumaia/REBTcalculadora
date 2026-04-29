@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumo Diario Solar - REBT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-primary: #0f0f23; --bg-secondary: #1a1a2e; --bg-card: #16213e; --accent: #00d4ff; --text-primary: #ffffff; --text-secondary: #94a3b8; --text-muted: #64748b; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        h1 { text-align: center; margin-bottom: 8px; color: var(--accent); }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; color: var(--text-secondary); }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--bg-secondary); border-radius: 6px; background: var(--bg-secondary); color: var(--text-primary); font-family: 'Inter', sans-serif; }
+        button { background: var(--accent); color: var(--bg-primary); padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: 'Inter', sans-serif; font-size: 14px; width: 100%; }
+        button:hover { opacity: 0.9; }
+        .resultados { margin-top: 30px; padding: 20px; background: var(--bg-card); border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.1); }
+        .resultado-item { margin: 10px 0; padding: 12px; background: var(--bg-secondary); border-radius: 8px; border-left: 4px solid var(--accent); }
+        .error { color: #ff6b6b; padding: 10px; background: rgba(255, 107, 107, 0.1); border-radius: 6px; }
+        .nav { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .nav a { background: var(--bg-secondary); padding: 8px 12px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 13px; transition: all 0.2s; }
+        .nav a:hover { color: var(--accent); border-color: var(--accent); }
+        .nav a.active { background: var(--accent); color: var(--bg-primary); }
+        .info-box { background: var(--bg-card); padding: 16px 20px; border-radius: 10px; margin-bottom: 25px; border: 1px solid rgba(0, 212, 255, 0.15); font-size: 14px; color: var(--text-secondary); line-height: 1.6; }
+        .nav-bottom { display: flex; justify-content: center; gap: 8px; margin-top: 30px; flex-wrap: wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1 style="text-align: center; margin-bottom: 8px; color: var(--accent);"><a href="/" style="color: inherit; text-decoration: none;">REBT Calculator</a></h1>
+    <h1>⚡ Consumo Diario Solar</h1>
+    <p class="subtitle">Wh/Ah para Dimensionado</p>
+    <div class="info-box">Cálculo de consumo eléctrico diario. Suma consumos por electrodoméstico y horas de uso para dimensionar instalación.</div>
+    <form method="POST">
+        <div class="form-group">
+            <label>Consumo diario (kWh/día)</label>
+            <input type="number" name="consumo_kwh" value="10" min="0.1" step="0.5" required>
+        </div>
+        <div class="form-group">
+            <label>Tensión del sistema (V)</label>
+            <select name="tension">
+                <option value="12">12V</option>
+                <option value="24" selected>24V</option>
+                <option value="48">48V</option>
+            </select>
+        </div>
+        <button type="submit">Calcular</button>
+    </form>
+    {% if resultado %}
+        <div class="resultados">
+            {% if resultado.error %}
+                <div class="error">{{ resultado.error }}</div>
+            {% else %}
+                <div class="resultado-item"><strong>Consumo diario:</strong> {{ resultado.consumo_kwh }} kWh</div>
+                <div class="resultado-item"><strong>En Wh:</strong> {{ resultado.consumo_wh }} Wh</div>
+                <div class="resultado-item"><strong>En Ah @ {{ resultado.tension_v }}V:</strong> {{ resultado.consumo_ah|round(2) }} Ah</div>
+            {% endif %}
+        </div>
+    {% endif %}
+    <div class="nav-bottom">
+        <a href="/">Inicio</a>
+        <a href="/vivienda">🏠 Vivienda</a>
+        <a href="/edificio">🏢 Edificio</a>
+        <a href="/circuito">⚡ Circuito</a>
+        <a href="/calc_seccion">📏 Sección</a>
+        <a href="/calc_caida">📉 Caída</a>
+        <a href="/calc_proteccion">🛡️ Protección</a>
+        <a href="/calc_solar">☀️ Solar</a>
+        <a href="/calc_baterias_solares">🔋 Baterías</a>
+        <a href="/calc_consumo_diario" class="active">⚡ Consumo</a>
+    </div>
+</body>
+</html>

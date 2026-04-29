@@ -49,3 +49,6 @@ build/
 # RAG - Base de datos vectorial (se regenera con index_rag.py)
 data/
 *.sqlite3
+
+# Carpeta ignorada
+CalculadororasBase/

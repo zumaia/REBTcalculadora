@@ -33,6 +33,27 @@ from engine_rebt import (
     ResultadoLGA,
     CAIDAS_TENSION
 )
+from calculadoras_pdf import (
+    calcular_seccion_cable_completa,
+    calcular_caida_tension_detallado,
+    calcular_proteccion_completa,
+    calcular_cortocircuito_simplificado,
+    calcular_paneles_solares,
+    calcular_baterias_ah,
+    calcular_ley_ohm,
+    calcular_seccion_potencia_distancia,
+    calcular_seccion_caida_distancia,
+    calcular_resistencia_conductor,
+    calcular_divisor_tension,
+    calcular_factor_potencia,
+    calcular_resistencias_paralelo,
+    calcular_potencia_electrica,
+    calcular_cortocircuito_impedancias,
+    calcular_electrodos_tierra,
+    calcular_longitud_maxima_cable,
+    calcular_numero_picas,
+    calcular_codigo_colores_resistencia
+)
 from schemes import generar_esquema_vivienda, generar_esquema_edificio
 
 # RAG solo en local (no en Vercel por tamaño)
@@ -97,7 +118,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return redirect('/vivienda')
+    return render_template('index.html')
 
 
 @app.route('/vivienda')
@@ -280,11 +301,12 @@ def calcular_di():
 
 @app.route('/api/calcular', methods=['POST'])
 def api_calcular():
-    """API REST para cálculos"""
+    """API REST universal para TODAS las calculadoras"""
     data = request.get_json()
     tipo = data.get('tipo')
     
     try:
+        # === Vivienda, Edificio, Circuito (ya implementado) ===
         if tipo == 'vivienda':
             resultado = calcular_circuitos_vivienda(
                 data['puntos_luz'],
@@ -318,8 +340,177 @@ def api_calcular():
                 'pia': calcular_pia(intensidad),
                 'tubo': calcular_tubo(normalizar_seccion(max(seccion, seccion_cdt)))
             }
+        
+        # === Calculadoras de Cable ===
+        elif tipo == 'seccion':
+            resultado = calcular_seccion_cable_completa(
+                data['potencia'],
+                data.get('tension', 230),
+                data.get('fp', 0.8),
+                data.get('longitud', 25),
+                data.get('cdt', 3),
+                data.get('metodo', 'B1'),
+                data.get('aislamiento', '2xPVC'),
+                data.get('material', 'cobre'),
+                data.get('trifasica', False)
+            )
+        elif tipo == 'caida':
+            resultado = calcular_caida_tension_detallado(
+                data['potencia'],
+                data.get('longitud', 25),
+                data.get('seccion', 2.5),
+                data.get('tension', 230),
+                data.get('fp', 0.8),
+                data.get('material', 'cobre')
+            )
+        elif tipo == 'proteccion':
+            resultado = calcular_proteccion_completa(
+                data['intensidad'],
+                data.get('seccion', 2.5),
+                data.get('metodo', 'B1'),
+                data.get('aislamiento', '2xPVC'),
+                data.get('tipo_curva', 'C'),
+                data.get('corriente_cc', 0)
+            )
+        
+        # === Solar y Baterías ===
+        elif tipo == 'solar':
+            resultado = calcular_paneles_solares(
+                data.get('consumo_diario', 10),
+                data.get('irradiacion', 4.5),
+                data.get('perdidas', 25),
+                data.get('autonomia_horas', 24),
+                data.get('tension_sistema', 24)
+            )
+        elif tipo == 'baterias':
+            resultado = calcular_baterias_ah(
+                data.get('consumo', 10),
+                data.get('tension', 24),
+                data.get('dias', 1),
+                data.get('profundidad', 50)
+            )
+        
+        # === Cálculos Eléctricos ===
+        elif tipo == 'consumo_diario':
+            consumo_kwh = data.get('consumo_kwh', 10)
+            tension = data.get('tension', 24)
+            resultado = {
+                'consumo_kwh': consumo_kwh,
+                'consumo_wh': consumo_kwh * 1000,
+                'consumo_ah': (consumo_kwh * 1000) / tension,
+                'tension_v': tension
+            }
+        elif tipo == 'divisor':
+            resultado = calcular_divisor_tension(
+                data.get('v_in', 12),
+                data.get('r1', 1000),
+                data.get('r2', 1000),
+                data.get('r_load', 0)
+            )
+        elif tipo == 'fp':
+            resultado = calcular_factor_potencia(
+                data.get('p_activa', 1000),
+                data.get('s_aparente', 0),
+                data.get('q_reactiva', 0),
+                data.get('tension', 230)
+            )
+        elif tipo == 'rparalelo':
+            resistencias = data.get('resistencias', [100, 100])
+            voltaje = data.get('voltaje', 0)
+            if voltaje > 0:
+                resultado = calcular_resistencias_paralelo_voltaje(resistencias, voltaje)
+            else:
+                resultado = calcular_resistencias_paralelo(resistencias)
+        elif tipo == 'potencia_elec':
+            resultado = calcular_potencia_electrica(
+                data.get('tension', 230),
+                data.get('corriente', 10),
+                data.get('fp', 0.8),
+                data.get('trifasica', False)
+            )
+        elif tipo == 'ohm':
+            resultado = calcular_ley_ohm(
+                data.get('voltaje', 0),
+                data.get('corriente', 0),
+                data.get('resistencia', 0),
+                data.get('potencia', 0)
+            )
+        elif tipo == 'rconductor':
+            resultado = calcular_resistencia_conductor(
+                data.get('longitud', 100),
+                data.get('seccion', 2.5),
+                data.get('material', 'cobre'),
+                data.get('temperatura', 20)
+            )
+        
+        # === Cortocircuito ===
+        elif tipo == 'icc_simplificado':
+            resultado = {'icc_a': calcular_cortocircuito_simplificado(
+                data.get('scc_mva', 100),
+                data.get('tension', 400)
+            )}
+        elif tipo == 'icc_impedancias':
+            resultado = calcular_cortocircuito_impedancias(
+                data.get('tension', 400),
+                data.get('z_linea', 0.01),
+                data.get('z_trafo', 0.05),
+                data.get('z_red', 0.1),
+                data.get('trifasica', False)
+            )
+        
+        # === Tierra ===
+        elif tipo == 'tierra':
+            resultado = calcular_electrodos_tierra(
+                data.get('resistividad', 100),
+                data.get('tipo', 'pica'),
+                data.get('longitud', 1.5),
+                data.get('n_picas', 1),
+                data.get('separacion', 3),
+                data.get('suelo', 'medio')
+            )
+        elif tipo == 'longitud_max':
+            resultado = calcular_longitud_maxima_cable(
+                data.get('potencia', 2000),
+                data.get('seccion', 2.5),
+                data.get('cdt', 3),
+                data.get('tension', 230),
+                data.get('fp', 0.8),
+                data.get('material', 'cobre')
+            )
+        elif tipo == 'picas':
+            resultado = calcular_numero_picas(
+                data.get('resistencia_obj', 30),
+                data.get('resistividad', 100),
+                data.get('longitud', 1.5),
+                data.get('separacion', 3)
+            )
+        
+        # === Sección por Distancia ===
+        elif tipo == 'seccion_pot_dist':
+            resultado = calcular_seccion_potencia_distancia(
+                data.get('potencia', 2000),
+                data.get('distancia', 25),
+                data.get('tension', 230),
+                data.get('cdt', 3)
+            )
+        elif tipo == 'seccion_caida_dist':
+            resultado = calcular_seccion_caida_distancia(
+                data.get('potencia', 2000),
+                data.get('distancia', 25),
+                data.get('cdt', 3),
+                data.get('tension', 230),
+                data.get('material', 'cobre')
+            )
+        
+        # === Código Colores ===
+        elif tipo == 'codigo_colores':
+            resultado = calcular_codigo_colores_resistencia(
+                data.get('valor_ohm', 1000),
+                data.get('tolerancia', 'oro')
+            )
+        
         else:
-            return jsonify({'error': 'Tipo no válido'}), 400
+            return jsonify({'error': f'Tipo no válido: {tipo}'}), 400
             
         return jsonify({'ok': True, 'resultado': resultado})
     except Exception as e:
@@ -328,28 +519,40 @@ def api_calcular():
 
 @app.route('/buscar', methods=['POST'])
 def buscar():
-    """Búsqueda RAG en documentos"""
+    """Búsqueda RAG en documentos con Ollama"""
     try:
         query = request.form.get('q', '')
         tipo = request.form.get('tipo', 'todos')
+        usar_ia = request.form.get('usar_ia') == 'on'
         
         if not RAG_AVAILABLE:
             return render_template('index_buscar.html', error='RAG no disponible')
         
         search = REBT_Search()
         
-        if tipo == 'normativa':
-            results = search.buscar_normativa(query)
-        elif tipo == 'ejercicios':
-            results = search.buscar_ejercicios(query)
-        elif tipo == 'proyectos':
-            results = search.buscar_proyectos(query)
+        if usar_ia:
+            # Usar Ollama para generar respuesta con contexto
+            resultado = search.responder_con_fuentes(query)
+            return render_template('index_buscar.html',
+                               query=query,
+                               respuesta_ia=resultado['respuesta'],
+                               resultados=resultado['fuentes'],
+                               usar_ia=True)
         else:
-            results = search.buscar(query)
-        
-        return render_template('index_buscar.html',
-                           query=query,
-                           resultados=results)
+            # Búsqueda tradicional sin IA
+            if tipo == 'normativa':
+                results = search.buscar_normativa(query)
+            elif tipo == 'ejercicios':
+                results = search.buscar_ejercicios(query)
+            elif tipo == 'proyectos':
+                results = search.buscar_proyectos(query)
+            else:
+                results = search.buscar(query)
+            
+            return render_template('index_buscar.html',
+                               query=query,
+                               resultados=results,
+                               usar_ia=False)
     except Exception as e:
         return render_template('index_buscar.html', error=str(e))
 
@@ -360,35 +563,54 @@ def ver_resultados():
     try:
         query = request.form.get('query', '')
         tipo = request.form.get('tipo', 'todos')
+        usar_ia = request.form.get('usar_ia') == 'on'
         
         if not RAG_AVAILABLE:
             return "RAG no disponible"
         
         search = REBT_Search()
         
-        if tipo == 'normativa':
-            results = search.buscar_normativa(query, n_resultados=20)
-        elif tipo == 'ejercicios':
-            results = search.buscar_ejercicios(query, n_resultados=20)
-        elif tipo == 'proyectos':
-            results = search.buscar_proyectos(query, n_resultados=20)
+        if usar_ia:
+            # Respuesta generada con Ollama
+            resultado = search.responder_con_fuentes(query, n_resultados=20)
+            html = f"<html><head><title>Resultados IA: {query}</title></head><body style='font-family: sans-serif; padding: 20px; background: #0f172a; color: #e2e8f0;'>"
+            html += f"<h1>🤖 Respuesta IA para: '{query}'</h1>"
+            html += f"<div style='background: #1e293b; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #22d3ee;'>"
+            html += f"<p style='color: #cbd5e1; white-space: pre-wrap;'>{resultado['respuesta']}</p>"
+            html += "</div>"
+            html += f"<h2 style='color: #22d3ee;'>📚 Fuentes consultadas</h2>"
+            
+            for i, r in enumerate(resultado['fuentes'], 1):
+                similitud = int(r.get('similitud', 0) * 100)
+                html += f"<div style='background: #1e293b; padding: 16px; margin: 12px 0; border-radius: 8px;'>"
+                html += f"<h3 style='color: #22d3ee; margin: 0;'>{i}. {r['fuente']} ({r['tipo']})</h3>"
+                html += f"<p style='color: #94a3b8; font-size: 12px;'>Relevancia: {similitud}%</p>"
+                html += f"<p style='color: #cbd5e1;'>{r['texto']}</p>"
+                html += "</div>"
         else:
-            results = search.buscar(query, n_resultados=20)
-        
-        html = f"<html><head><title>Resultados: {query}</title></head><body style='font-family: sans-serif; padding: 20px; background: #0f172a; color: #e2e8f0;'>"
-        html += f"<h1>Resultados para: '{query}'</h1>"
-        html += f"<p style='color: #94a3b8;'>{len(results)} encontrados</p><hr>"
-        
-        for i, r in enumerate(results, 1):
-            similitud = int(r.get('similitud', 0) * 100)
-            html += f"<div style='background: #1e293b; padding: 16px; margin: 12px 0; border-radius: 8px;'>"
-            html += f"<h3 style='color: #22d3ee; margin: 0;'>{i}. {r['fuente']} ({r['tipo']})</h3>"
-            html += f"<p style='color: #94a3b8; font-size: 12px;'>Relevancia: {similitud}%</p>"
-            html += f"<p style='color: #cbd5e1;'>{r['texto']}</p>"
-            html += "</div><hr>"
+            # Búsqueda tradicional
+            if tipo == 'normativa':
+                results = search.buscar_normativa(query, n_resultados=20)
+            elif tipo == 'ejercicios':
+                results = search.buscar_ejercicios(query, n_resultados=20)
+            elif tipo == 'proyectos':
+                results = search.buscar_proyectos(query, n_resultados=20)
+            else:
+                results = search.buscar(query, n_resultados=20)
+            
+            html = f"<html><head><title>Resultados: {query}</title></head><body style='font-family: sans-serif; padding: 20px; background: #0f172a; color: #e2e8f0;'>"
+            html += f"<h1>Resultados para: '{query}'</h1>"
+            html += f"<p style='color: #94a3b8;'>{len(results)} encontrados</p><hr>"
+            
+            for i, r in enumerate(results, 1):
+                similitud = int(r.get('similitud', 0) * 100)
+                html += f"<div style='background: #1e293b; padding: 16px; margin: 12px 0; border-radius: 8px;'>"
+                html += f"<h3 style='color: #22d3ee; margin: 0;'>{i}. {r['fuente']} ({r['tipo']})</h3>"
+                html += f"<p style='color: #94a3b8; font-size: 12px;'>Relevancia: {similitud}%</p>"
+                html += f"<p style='color: #cbd5e1;'>{r['texto']}</p>"
+                html += "</div><hr>"
         
         html += "<a href='/' style='color: #22d3ee;'>← Volver</a></body></html>"
-        
         return html
     except Exception as e:
         return f"Error: {e}"
@@ -500,6 +722,393 @@ def download_svg():
         )
     except Exception as e:
         return jsonify({'error': str(e)}), 400
+
+
+# ============================================================
+# RUTAS PARA CALCULADORAS PDF
+# ============================================================
+
+@app.route('/calc_seccion', methods=['GET', 'POST'])
+def calc_seccion():
+    """Calculadora de Sección de Cable por Amperaje y Potencia"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            potencia = float(request.form.get('potencia', 1000))
+            tension = float(request.form.get('tension', 230))
+            fp = float(request.form.get('fp', 0.8))
+            longitud = float(request.form.get('longitud', 25))
+            cdt_percent = float(request.form.get('cdt', 3))
+            metodo = request.form.get('metodo', 'B1')
+            aislamiento = request.form.get('aislamiento', '2xPVC')
+            material = request.form.get('material', 'cobre')
+            es_trifasica = request.form.get('trifasica') == 'on'
+            
+            resultado = calcular_seccion_cable_completa(
+                potencia, tension, fp, longitud, cdt_percent,
+                metodo, aislamiento, material, es_trifasica
+            )
+        except Exception as e:
+            resultado = {'error': str(e)}
+    
+    return render_template('calc_seccion.html', resultado=resultado)
+
+
+@app.route('/calc_caida', methods=['GET', 'POST'])
+def calc_caida():
+    """Calculadora de Caída de Tensión"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            potencia = float(request.form.get('potencia', 1000))
+            longitud = float(request.form.get('longitud', 25))
+            seccion = float(request.form.get('seccion', 2.5))
+            tension = float(request.form.get('tension', 230))
+            fp = float(request.form.get('fp', 0.8))
+            material = request.form.get('material', 'cobre')
+            
+            resultado = calcular_caida_tension_detallado(
+                potencia, longitud, seccion, tension, fp, material
+            )
+        except Exception as e:
+            resultado = {'error': str(e)}
+    
+    return render_template('calc_caida.html', resultado=resultado)
+
+
+@app.route('/calc_proteccion', methods=['GET', 'POST'])
+def calc_proteccion():
+    """Calculadora de Protección (Sobrecarga y Cortocircuito)"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            intensidad = float(request.form.get('intensidad', 10))
+            seccion_cable = float(request.form.get('seccion', 2.5))
+            metodo = request.form.get('metodo', 'B1')
+            aislamiento = request.form.get('aislamiento', '2xPVC')
+            tipo_curva = request.form.get('curva', 'C')
+            corriente_cc = float(request.form.get('corriente_cc', 0))
+            
+            resultado = calcular_proteccion_completa(
+                intensidad, seccion_cable, metodo, aislamiento,
+                tipo_curva, corriente_cc
+            )
+        except Exception as e:
+            resultado = {'error': str(e)}
+    
+    return render_template('calc_proteccion.html', resultado=resultado)
+
+
+@app.route('/calc_solar', methods=['GET', 'POST'])
+def calc_solar():
+    """Calculadora de Paneles Solares"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            consumo_diario = float(request.form.get('consumo_diario', 10))
+            irradiacion = float(request.form.get('irradiacion', 4.5))
+            perdidas = float(request.form.get('perdidas', 25)) / 100
+            autonomia_horas = float(request.form.get('autonomia', 24))
+            tension_sistema = float(request.form.get('tension', 24))
+            
+            resultado = calcular_paneles_solares(
+                consumo_diario, irradiacion, perdidas,
+                autonomia_horas, tension_sistema
+            )
+            
+            # Calcular también baterías
+            if request.form.get('calcular_baterias') == 'on':
+                profundidad = float(request.form.get('profundidad', 50)) / 100
+                dias = autonomia_horas / 24
+                resultado['baterias'] = calcular_baterias_ah(
+                    consumo_diario, tension_sistema, dias, profundidad
+                )
+        except Exception as e:
+            resultado = {'error': str(e)}
+    
+    return render_template('calc_solar.html', resultado=resultado)
+
+
+# ============================================================
+# RUTAS PARA EL RESTO DE CALCULADORAS PDF
+# ============================================================
+
+@app.route('/calc_baterias_solares', methods=['GET', 'POST'])
+def calc_baterias_solares():
+    """Calculadora Baterías Solares - Capacidad (Ah) y Autonomía"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            consumo = float(request.form.get('consumo_diario', 10))
+            tension = float(request.form.get('tension', 24))
+            dias = float(request.form.get('dias', 1))
+            profundidad = float(request.form.get('profundidad', 50)) / 100
+            resultado = calcular_baterias_ah(consumo, tension, dias, profundidad)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_baterias_solares.html', resultado=resultado)
+
+
+@app.route('/calc_consumo_diario', methods=['GET', 'POST'])
+def calc_consumo_diario():
+    """Calculadora Consumo Diario Solar - Wh/Ah para Dimensionado"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            consumo_kwh = float(request.form.get('consumo_kwh', 10))
+            tension = float(request.form.get('tension', 24))
+            resultado = {
+                "consumo_kwh": consumo_kwh,
+                "consumo_wh": consumo_kwh * 1000,
+                "consumo_ah": (consumo_kwh * 1000) / tension,
+                "tension_v": tension
+            }
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_consumo_diario.html', resultado=resultado)
+
+
+@app.route('/calc_divisor', methods=['GET', 'POST'])
+def calc_divisor():
+    """Calculadora Divisor de Tensión - Con y Sin Carga"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            v_in = float(request.form.get('v_in', 12))
+            r1 = float(request.form.get('r1', 1000))
+            r2 = float(request.form.get('r2', 1000))
+            r_load = float(request.form.get('r_load', 0))
+            resultado = calcular_divisor_tension(v_in, r1, r2, r_load)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_divisor.html', resultado=resultado)
+
+
+@app.route('/calc_fp', methods=['GET', 'POST'])
+def calc_fp():
+    """Calculadora Factor de Potencia - Corrección y Coseno Fi"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            p = float(request.form.get('p_activa', 1000))
+            s = float(request.form.get('s_aparente', 0))
+            q = float(request.form.get('q_reactiva', 0))
+            v = float(request.form.get('tension', 230))
+            resultado = calcular_factor_potencia(p, s, q, v)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_fp.html', resultado=resultado)
+
+
+@app.route('/calc_rparalelo', methods=['GET', 'POST'])
+def calc_rparalelo():
+    """Calculadora Resistencias en Paralelo"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            resistencias = [float(r) for r in request.form.getlist('resistencia') if r]
+            voltaje = float(request.form.get('voltaje', 0))
+            if voltaje > 0:
+                resultado = calcular_resistencias_paralelo_voltaje(resistencias, voltaje)
+            else:
+                resultado = calcular_resistencias_paralelo(resistencias)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_rparalelo.html', resultado=resultado)
+
+
+@app.route('/calc_costo', methods=['GET', 'POST'])
+def calc_costo():
+    """Calculadora Consumo Eléctrico - Convierte kWh a Costo"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            consumo = float(request.form.get('consumo_kwh', 300))
+            precio_kwh = float(request.form.get('precio_kwh', 0.15))
+            potencia_kw = float(request.form.get('potencia_kw', 3.45))
+            precio_pot = float(request.form.get('precio_pot', 0.12))
+            resultado = calcular_costo_consumo(consumo, precio_kwh, potencia_kw, precio_pot)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_costo.html', resultado=resultado)
+
+
+@app.route('/calc_icc_simplificado', methods=['GET', 'POST'])
+def calc_icc_simplificado():
+    """Calculadora Cortocircuito Simplificada - Icc sin Datos de Red"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            scc_mva = float(request.form.get('scc_mva', 100))
+            tension = float(request.form.get('tension', 400))
+            resultado = {"icc_a": calcular_cortocircuito_simplificado(scc_mva, tension)}
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_icc_simplificado.html', resultado=resultado)
+
+
+@app.route('/calc_icc_impedancias', methods=['GET', 'POST'])
+def calc_icc_impedancias():
+    """Calculadora Cortocircuito por Impedancias"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            tension = float(request.form.get('tension', 400))
+            z_red = float(request.form.get('z_red', 0.1))
+            z_trafo = float(request.form.get('z_trafo', 0.05))
+            z_linea = float(request.form.get('z_linea', 0.01))
+            es_trifasica = request.form.get('trifasica') == 'on'
+            resultado = calcular_cortocircuito_impedancias(tension, z_linea, z_trafo, z_red, es_trifasica)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_icc_impedancias.html', resultado=resultado)
+
+
+@app.route('/calc_tierra', methods=['GET', 'POST'])
+def calc_tierra():
+    """Calculadora Electrodos de Tierra"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            resistividad = float(request.form.get('resistividad', 100))
+            tipo = request.form.get('tipo', 'pica')
+            longitud = float(request.form.get('longitud', 1.5))
+            n_picass = int(request.form.get('n_picas', 1))
+            separacion = float(request.form.get('separacion', 3))
+            suelo = request.form.get('suelo', 'medio')
+            resultado = calcular_electrodos_tierra(resistividad, tipo, longitud, n_picass, separacion, suelo)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_tierra.html', resultado=resultado)
+
+
+@app.route('/calc_longitud_max', methods=['GET', 'POST'])
+def calc_longitud_max():
+    """Calculadora Longitud Máxima de Cable"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            potencia = float(request.form.get('potencia', 2000))
+            seccion = float(request.form.get('seccion', 2.5))
+            cdt = float(request.form.get('cdt', 3))
+            tension = float(request.form.get('tension', 230))
+            fp = float(request.form.get('fp', 0.8))
+            material = request.form.get('material', 'cobre')
+            resultado = calcular_longitud_maxima_cable(potencia, seccion, cdt, tension, fp, material)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_longitud_max.html', resultado=resultado)
+
+
+@app.route('/calc_picas', methods=['GET', 'POST'])
+def calc_picas():
+    """Calculadora Picas de Tierra - ¿Cuántas Jabalinas necesitas?"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            resistencia_obj = float(request.form.get('resistencia_obj', 30))
+            resistividad = float(request.form.get('resistividad', 100))
+            longitud = float(request.form.get('longitud', 1.5))
+            separacion = float(request.form.get('separacion', 3))
+            resultado = calcular_numero_picas(resistencia_obj, resistividad, longitud, separacion)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_picas.html', resultado=resultado)
+
+
+@app.route('/calc_potencia_elec', methods=['GET', 'POST'])
+def calc_potencia_elec():
+    """Calculadora Potencia Eléctrica - Monofásica y Trifásica"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            tension = float(request.form.get('tension', 230))
+            corriente = float(request.form.get('corriente', 10))
+            fp = float(request.form.get('fp', 0.8))
+            es_trifasica = request.form.get('trifasica') == 'on'
+            resultado = calcular_potencia_electrica(tension, corriente, fp, es_trifasica)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_potencia_elec.html', resultado=resultado)
+
+
+@app.route('/calc_rconductor', methods=['GET', 'POST'])
+def calc_rconductor():
+    """Calculadora Resistencia de un Conductor y Resistividad"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            longitud = float(request.form.get('longitud', 100))
+            seccion = float(request.form.get('seccion', 2.5))
+            material = request.form.get('material', 'cobre')
+            temperatura = float(request.form.get('temperatura', 20))
+            resultado = calcular_resistencia_conductor(longitud, seccion, material, temperatura)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_rconductor.html', resultado=resultado)
+
+
+@app.route('/calc_seccion_pot_dist', methods=['GET', 'POST'])
+def calc_seccion_pot_dist():
+    """Calculadora Sección de Cables - Potencia y Distancia"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            potencia = float(request.form.get('potencia', 2000))
+            distancia = float(request.form.get('distancia', 25))
+            tension = float(request.form.get('tension', 230))
+            cdt = float(request.form.get('cdt', 3))
+            resultado = calcular_seccion_potencia_distancia(potencia, distancia, tension, cdt)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_seccion_pot_dist.html', resultado=resultado)
+
+
+@app.route('/calc_seccion_caida_dist', methods=['GET', 'POST'])
+def calc_seccion_caida_dist():
+    """Calculadora Sección por Caída de Tensión - Distancia"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            potencia = float(request.form.get('potencia', 2000))
+            distancia = float(request.form.get('distancia', 25))
+            cdt = float(request.form.get('cdt', 3))
+            tension = float(request.form.get('tension', 230))
+            material = request.form.get('material', 'cobre')
+            resultado = calcular_seccion_caida_distancia(potencia, distancia, cdt, tension, material)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_seccion_caida_dist.html', resultado=resultado)
+
+
+@app.route('/calc_ohm', methods=['GET', 'POST'])
+def calc_ohm():
+    """Calculadora Ley de Ohm y Potencia"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            voltaje = float(request.form.get('voltaje', 0))
+            corriente = float(request.form.get('corriente', 0))
+            resistencia = float(request.form.get('resistencia', 0))
+            potencia = float(request.form.get('potencia', 0))
+            resultado = calcular_ley_ohm(voltaje=voltaje, corriente=corriente, resistencia=resistencia, potencia=potencia)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_ohm.html', resultado=resultado)
+
+
+@app.route('/calc_codigo_colores', methods=['GET', 'POST'])
+def calc_codigo_colores():
+    """Código de Colores de Resistencias - 4 y 5 Bandas"""
+    resultado = None
+    if request.method == 'POST':
+        try:
+            valor = float(request.form.get('valor_ohm', 1000))
+            tolerancia = request.form.get('tolerancia', 'oro')
+            resultado = calcular_codigo_colores_resistencia(valor, tolerancia)
+        except Exception as e:
+            resultado = {'error': str(e)}
+    return render_template('calc_codigo_colores.html', resultado=resultado)
 
 
 if __name__ == '__main__':
