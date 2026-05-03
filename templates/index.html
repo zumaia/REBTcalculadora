@@ -6,17 +6,82 @@
     <title>REBT Calculator</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-primary: #0f0f23; --bg-secondary: #1a1a2e; --bg-card: #16213e; --accent: #00d4ff; --text-primary: #ffffff; --text-secondary: #94a3b8; --text-muted: #64748b; }
+        :root {
+            --bg-primary: #0f0f23;
+            --bg-secondary: #1a1a2e;
+            --bg-card: #16213e;
+            --accent: #00d4ff;
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; }
-        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         h1 { text-align: center; margin-bottom: 8px; }
         h1 a { color: var(--accent); text-decoration: none; }
         .subtitle { text-align: center; font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
-        .nav { display: flex; justify-content: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
-        .nav a { background: var(--bg-secondary); padding: 8px 12px; border-radius: 8px; color: var(--text-secondary); text-decoration: none; font-size: 13px; }
-        .nav a:hover { color: var(--accent); }
-        .nav a.active { background: var(--accent); color: var(--bg-primary); }
+
+        .project-description {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .project-description p { color: var(--text-secondary); line-height: 1.6; margin-bottom: 10px; }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .calculators-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .calc-button {
+            background: var(--bg-secondary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 13px;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            transition: all 0.3s;
+            display: block;
+        }
+        .calc-button:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-color: var(--accent);
+        }
+
+        .description-box {
+            background: var(--bg-card);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        .description-box h3 {
+            color: var(--accent);
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+        .description-box p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
         .credits { text-align: center; margin-top: 30px; font-size: 12px; color: var(--text-muted); }
         .credits a { color: var(--accent); }
     </style>
@@ -25,60 +90,66 @@
     <div class="container">
         <h1><a href="/">REBT Calculator</a></h1>
         <p class="subtitle">ITC-BT-25 Viviendas | ITC-BT-10 Edificios | ITC-BT-19 Sección cables | +4 Calculadoras PDF</p>
-        
 
+        <div class="project-description">
+            <p>Calculadora de instalaciones eléctricas de baja tensión según el Reglamento Electrotécnico de Baja Tensión (REBT).</p>
+            <p>Herramienta diseñada para electricistas, ingenieros y estudiantes que necesitan realizar cálculos precisos cumpliendo con la normativa vigente en España.</p>
+        </div>
 
-    <div class="info-box" style="background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid rgba(0, 212, 255, 0.1); margin-bottom: 30px;">
-        <h2 style="color: var(--accent); margin-bottom: 16px; font-size: 20px;">📋 REBT Calculator</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 16px;">Calculadora de Instalaciones Eléctricas según Reglamento Electrotécnico de Baja Tensión</p>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px; margin-bottom: 16px;">
-            <div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;"><strong>ITC-BT-10:</strong> Edificios de viviendas</div>
-            <div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;"><strong>ITC-BT-19:</strong> Intensidades máximas</div>
-            <div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;"><strong>ITC-BT-25:</strong> Instalaciones en viviendas</div>
-            <div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;"><strong>ITC-BT-18:</strong> Puestas a tierra</div>
+        <div class="main-layout">
+            <div class="calculators-grid">
+                <a href="/vivienda" class="calc-button" data-desc="Calcula los circuitos C1-C13 para instalaciones de viviendas según ITC-BT-25. Incluye dimensionado automático de cables y protecciones.">Circuitos Vivienda</a>
+                <a href="/edificio" class="calc-button" data-desc="Cálculos para edificios de viviendas según ITC-BT-10. Dimensionado de instalaciones de enlace y centralización de contadores.">Edificio Residencial</a>
+                <a href="/circuito" class="calc-button" data-desc="Calculadora genérica para el dimensionado de cualquier circuito eléctrico. Calcula sección de cable, protección y caída de tensión.">Cálculo de Circuito</a>
+                <a href="/di" class="calc-button" data-desc="Dimensionado de la Derivación Individual (DI) según ITC-BT-15. Calcula sección de cable y protecciones desde la CGP hasta el cuadro de mando.">Derivación Individual</a>
+                <a href="/calc_seccion" class="calc-button" data-desc="Calcula la sección de cable necesaria según la intensidad o potencia, cumpliendo con ITC-BT-19 y considerando tipo de cable y método de instalación.">Sección de Cable</a>
+                <a href="/calc_caida" class="calc-button" data-desc="Calcula la caída de tensión en líneas eléctricas monofásicas y trifásicas. Verifica el cumplimiento del REBT (máx. 3% para viviendas).">Caída de Tensión</a>
+                <a href="/calc_proteccion" class="calc-button" data-desc="Selecciona la protección adecuada (magnetotérmico) según intensidad de diseño y capacidad de corte. Verifica protección contra sobrecargas y cortocircuitos.">Protecciones</a>
+                <a href="/calc_solar" class="calc-button" data-desc="Dimensionado completo de instalaciones de paneles solares fotovoltaicos. Calcula número de paneles, inversor y producción estimada.">Paneles Solares</a>
+                <a href="/calc_baterias_solares" class="calc-button" data-desc="Calcula la capacidad de las baterías solares según autonomía deseada y consumo diario. Incluye configuración de banco de baterías.">Baterías Solares</a>
+                <a href="/calc_consumo_diario" class="calc-button" data-desc="Calcula el consumo eléctrico diario de una vivienda o local comercial basado en los equipos y electrodomésticos utilizados.">Consumo Diario</a>
+                <a href="/calc_divisor" class="calc-button" data-desc="Calcula los valores de resistencias necesarios para crear un divisor de tensión. Útil para electrónica y circuitos de control.">Divisor de Tensión</a>
+                <a href="/calc_fp" class="calc-button" data-desc="Corrección del factor de potencia para mejorar la eficiencia energética. Calcula la batería de condensadores necesaria.">Factor de Potencia</a>
+                <a href="/calc_rparalelo" class="calc-button" data-desc="Calcula la resistencia equivalente de resistencias conectadas en paralelo. Herramienta básica para electrónica.">Resistencias en Paralelo</a>
+                <a href="/calc_costo" class="calc-button" data-desc="Convierte el consumo eléctrico (kWh) a coste económico según tarifa eléctrica. Útil para presupuestos y análisis de costes.">Coste de Energía</a>
+                <a href="/calc_icc_simplificado" class="calc-button" data-desc="Cálculo simplificado de intensidad de cortocircuito en instalaciones eléctricas. Determina la capacidad de corte necesaria.">Cortocircuito Simplificado</a>
+                <a href="/calc_icc_impedancias" class="calc-button" data-desc="Cálculo de cortocircuito considerando las impedancias de la línea. Método más preciso según ITC-BT-23.">Cortocircuito por Impedancias</a>
+                <a href="/calc_tierra" class="calc-button" data-desc="Dimensionado de tomas de tierra y puesta a tierra según ITC-BT-18. Calcula resistencia de electrodos y anillo de tierra.">Toma de Tierra</a>
+                <a href="/calc_longitud_max" class="calc-button" data-desc="Calcula la longitud máxima de un cable manteniendo la caída de tensión dentro de límites permitidos por el REBT.">Longitud Máxima</a>
+                <a href="/calc_picas" class="calc-button" data-desc="Calcula el número de picas necesarias para lograr una resistencia de puesta a tierra según normativa ITC-BT-18.">Número de Picas</a>
+                <a href="/calc_potencia_elec" class="calc-button" data-desc="Calcula la potencia eléctrica (P=U×I) en monofásica y trifásica. Convierte entre kW, kVA y otros valores.">Potencia Eléctrica</a>
+                <a href="/calc_rconductor" class="calc-button" data-desc="Calcula la resistencia eléctrica de un conductor según material, sección, longitud y temperatura.">Resistencia de Conductor</a>
+                <a href="/calc_seccion_pot_dist" class="calc-button" data-desc="Dimensiona la sección del cable considerando potencia a transmitir y distancia, optimizando costes y caída de tensión.">Sección por Potencia/Dist</a>
+                <a href="/calc_seccion_caida_dist" class="calc-button" data-desc="Calcula la sección necesaria para mantener una caída de tensión específica según la distancia de la línea.">Sección por Caída/Dist</a>
+                <a href="/calc_ohm" class="calc-button" data-desc="Aplicación de la Ley de Ohm (V=R×I). Calcula cualquier variable conociendo las otras dos.">Ley de Ohm</a>
+                <a href="/calc_codigo_colores" class="calc-button" data-desc="Identifica el valor de resistencias mediante su código de colores (4 y 5 bandas). Herramienta para electrónica.">Código de Colores</a>
+                <a href="/ejercicios" class="calc-button" data-desc="Resuelve ejercicios de instalaciones eléctricas paso a paso con IA. Incluye explicaciones detalladas según REBT.">Ejercicios (IA)</a>
+                <a href="/proyecto" class="calc-button" data-desc="Genera documentación completa de proyectos eléctricos y Memorias Técnicas (MEM) según ITC-BT-04.">Proyecto Eléctrico</a>
+                <a href="/buscar" class="calc-button" data-desc="Busca en la normativa REBT y reglamentos técnicos. Encuentra información específica rápidamente.">Buscar en REBT</a>
+            </div>
+
+            <div class="description-box">
+                <h3>Información</h3>
+                <p id="desc-text">Pasa el cursor sobre cualquier calculadora para ver su descripción detallada.</p>
+            </div>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px;">
-            <div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;">✓ Cálculo automático de circuitos C1-C13</div>
-            <div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;">✓ Dimensionado de instalaciones de enlace</div>
-            <div style="padding: 8px; background: var(--bg-secondary); border-radius: 6px;">✓ +20 calculadoras temáticas</div>
+
+        <div class="credits">
+            <p>REBT Calculator &copy; 2024 | <a href="https://github.com/anomalyco/REBT_Project">GitHub</a></p>
         </div>
     </div>
-    
-    <div style="text-align: center; margin-bottom: 30px;">
-        <a href="/vivienda" style="display: inline-block; background: var(--accent); color: var(--bg-primary); padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; margin: 0 8px;">🏠 Comenzar con Vivienda</a>
-        <a href="/calc_seccion" style="display: inline-block; background: var(--bg-secondary); color: var(--text-primary); padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; margin: 0 8px; border: 1px solid rgba(0, 212, 255, 0.3);">📏 Ver Calculadoras</a>
-    </div>
-    
-    <div class="nav">
-        <a href="/vivienda" title="Circuitos de Vivienda (ITC-BT-25)">🏠</a>
-        <a href="/edificio" title="Edificio Residencial">🏢</a>
-        <a href="/circuito" title="Cálculo de Circuito">⚡</a>
-        <a href="/di" title="Derivación Individual">🔌</a>
-        <a href="/calc_seccion" title="Sección de Cable">📏</a>
-        <a href="/calc_caida" title="Caída de Tensión">📉</a>
-        <a href="/calc_proteccion" title="Protecciones">🛡️</a>
-        <a href="/calc_solar" title="Paneles Solares">☀️</a>
-        <a href="/calc_baterias_solares" title="Baterías Solares">🔋</a>
-        <a href="/calc_consumo_diario" title="Consumo Diario">⚡</a>
-        <a href="/calc_divisor" title="Divisor de Tensión">🔗</a>
-        <a href="/calc_fp" title="Factor de Potencia">📊</a>
-        <a href="/calc_rparalelo" title="Resistencias en Paralelo">🔀</a>
-        <a href="/calc_costo" title="Coste de Instalación">💰</a>
-        <a href="/calc_icc_simplificado" title="Cortocircuito Simplificado">⚡</a>
-        <a href="/calc_icc_impedancias" title="Cortocircuito por Impedancias">⚡</a>
-        <a href="/calc_tierra" title="Toma de Tierra">🌍</a>
-        <a href="/calc_longitud_max" title="Longitud Máxima">📏</a>
-        <a href="/calc_picas" title="Número de Picas">🌍</a>
-        <a href="/calc_potencia_elec" title="Potencia Eléctrica">⚡</a>
-        <a href="/calc_rconductor" title="Resistencia de Conductor">🔧</a>
-        <a href="/calc_seccion_pot_dist" title="Sección por Potencia">📏</a>
-        <a href="/calc_seccion_caida_dist" title="Sección por Caída">📏</a>
-        <a href="/calc_ohm" title="Ley de Ohm">⚡</a>
-        <a href="/calc_codigo_colores" title="Código de Colores">🎨</a>
-        <a href="/ejercicios" title="Ejercicios">📝</a>
-        <a href="/proyecto" title="Proyecto Eléctrico">📋</a>
-        <a href="/buscar" title="Buscar en REBT">🔍</a>
-    </div>
-    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.calc-button');
+            const descText = document.getElementById('desc-text');
+
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    descText.textContent = this.getAttribute('data-desc');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
